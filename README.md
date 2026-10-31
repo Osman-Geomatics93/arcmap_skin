@@ -67,7 +67,7 @@ restart (QGIS caches them at start-up).
 ## Development
 
 ```
-git clone <repo> && cd Arcmap_Skin
+git clone https://github.com/Osman-Geomatics93/arcmap_skin.git && cd arcmap_skin
 python scripts/draw_icons.py                                   # hand-drawn icons
 "C:/Program Files/QGIS 3.44.6/bin/python-qgis.bat" scripts/build_icon_theme.py   # derived icon theme
 python scripts/dev_link.py                                     # junction into the default profile

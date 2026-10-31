@@ -54,7 +54,7 @@ def main(path):
         url = fields.get(key, "").strip()
         if url and not re.match(r"^https?://", url):
             errors.append("metadata: %s must be an http(s) URL" % key)
-        if url and "github.com/mohamedfawzy/arcmap_skin" in url:
+        if url and "github.com/Osman-Geomatics93/arcmap_skin" in url:
             warnings.append("metadata: %s still points at the placeholder repository %s" % (key, url))
     if "@" not in fields.get("email", ""):
         errors.append("metadata: email looks wrong")
