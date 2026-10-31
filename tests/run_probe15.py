@@ -53,8 +53,17 @@ def run():
         lines.append("plugin on: %s" % plugin.on)
         # options page
         QTimer.singleShot(2500, dump_options)
+        iface.showOptionsDialog(iface.mainWindow(), "mOptionsPageArcMapSkin")
+        wait(500)
+        # the ArcMap menu entry opens the plugin's own (non-modal) window
+        from qgis.PyQt.QtWidgets import QDialog as _QDialog
         plugin.actions["skin_options"].trigger()
         wait(500)
+        own = iface.mainWindow().findChild(_QDialog, "ArcMapSkinOptions")
+        lines.append("own options window: %s visible=%s" % (own is not None, own.isVisible() if own else None))
+        if own is not None:
+            own.close()
+            wait(200)
         # dark theme
         from arcmap_skin import settings, util
 

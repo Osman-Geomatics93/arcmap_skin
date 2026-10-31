@@ -5,7 +5,7 @@ qgisMaximumVersion=4.99
 supportsQt6=True
 description=Gives QGIS the look and layout of ArcMap 10: classic menu bar, Standard/Tools/Editor toolbars, Table Of Contents with List By views, Catalog/Search/ArcToolbox panes, Data/Layout view buttons, ArcMap status bar, attribute table and symbology defaults. One click on, one click off.
 about=ArcMap Skin rearranges and restyles the QGIS interface so that users coming from ArcMap 10.x feel at home: an ArcMap-style menu bar (File, Edit, View, Bookmarks, Insert, Selection, Geoprocessing, Customize, Windows, Help), dockable Standard, Tools, Editor, Draw, Layout and Labeling toolbars built from QGIS's own tools, a Table Of Contents with List By Drawing Order / Source / Visibility / Selection, Catalog, Search and ArcToolbox panes, Data View / Layout View buttons, an ArcMap-like status bar and attribute table, ArcMap-style default symbology and colour ramps, and a flat, redrawn icon theme. Every change is recorded and reverted when the look is switched off. ArcMap Skin is an independent project and is not affiliated with, sponsored or endorsed by Esri. All icons are original artwork or derived from QGIS icons (GPL).
-version=0.2.1
+version=0.2.2
 author=Osman Osama Ahmed Ibrahim
 email=osmangeomatics93@gmail.com
 homepage=https://github.com/Osman-Geomatics93/arcmap_skin
@@ -17,7 +17,9 @@ icon=resources/icons/ui/icon.svg
 experimental=True
 deprecated=False
 hasProcessingProvider=no
-changelog=0.2.1
+changelog=0.2.2
+    - "ArcMap Skin Options..." opens its own window (OK / Apply / Cancel) instead of the QGIS Options dialog, so other Options pages are no longer validated (e.g. Processing's "Output folder does not exist"). The page is still available inside QGIS Options.
+    0.2.1
     - Fix crash when clicking OK in the Options dialog after changing the ArcMap Skin theme or features: the look is now re-applied only after every dialog has closed.
     - Fix the ArcMap look toggle being deleted by the first re-apply.
     0.2.0

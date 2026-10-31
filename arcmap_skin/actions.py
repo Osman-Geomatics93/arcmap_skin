@@ -207,7 +207,11 @@ def custom_actions(iface, changes):
     make("repair_geometry", tr("Repair Geometry…"), "repair", lambda: _run_algorithm("native:fixgeometries"))
 
     def skin_options():
-        iface.showOptionsDialog(win, "mOptionsPageArcMapSkin")
+        import qgis.utils as utils
+
+        from .settings import show_options_dialog
+
+        show_options_dialog(utils.plugins.get("arcmap_skin"), win)
 
     make("skin_options", tr("ArcMap Skin Options…"), "options", skin_options)
 
@@ -290,7 +294,7 @@ def custom_actions(iface, changes):
 
         for w in QApplication.topLevelWidgets():
             if w.objectName() in ("ArcMapMagnifier", "ArcMapMeasure", "ArcMapFindDialog", "ArcMapQueryBuilder",
-                                  "ArcMapCustomize", "ArcMapGettingStarted"):
+                                  "ArcMapCustomize", "ArcMapGettingStarted", "ArcMapSkinOptions"):
                 w.close()
         for a in acts.values():
             try:

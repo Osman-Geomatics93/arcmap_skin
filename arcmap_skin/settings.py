@@ -9,7 +9,9 @@ and default to on. Changing them re-applies the look.
 
 from qgis.core import QgsSettings
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
-from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QFormLayout, QGroupBox, QLabel, QVBoxLayout
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFormLayout, QGroupBox, QLabel,
+                                 QVBoxLayout)
 
 from .util import SETTINGS_GROUP, tr, ui_icon
 
@@ -101,6 +103,58 @@ class SettingsPage(QgsOptionsPageWidget):
             # up message boxes); the look is re-applied only once every
             # modal dialog, including the Options dialog itself, has closed.
             self.plugin.reapply_when_idle()
+
+
+class SettingsDialog(QDialog):
+    """ArcMap Skin Options as its own window.
+
+    The page is also registered in the QGIS Options dialog, but opening that
+    dialog validates every other page on OK (Processing complains about a
+    missing output folder, for instance), so the ArcMap menu entry opens
+    this lighter dialog instead.
+    """
+
+    def __init__(self, plugin, parent=None):
+        super().__init__(parent)
+        self.setObjectName("ArcMapSkinOptions")
+        self.setWindowTitle(tr("ArcMap Skin Options"))
+        self.setWindowIcon(ui_icon("icon"))
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        layout = QVBoxLayout(self)
+        self.page = SettingsPage(plugin, self)
+        layout.addWidget(self.page, 1)
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Apply
+            | QDialogButtonBox.StandardButton.Cancel, self)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        buttons.button(QDialogButtonBox.StandardButton.Apply).clicked.connect(self.page.apply)
+        layout.addWidget(buttons)
+        self.resize(460, 560)
+
+    # QDialog.closeEvent() calls reject(), so neither override may call
+    # close(); hide through the base class and let the window delete itself.
+    def accept(self):
+        self.page.apply()
+        super().accept()
+        self.deleteLater()
+
+    def reject(self):
+        super().reject()
+        self.deleteLater()
+
+
+def show_options_dialog(plugin, parent):
+    """Show (or raise) the ArcMap Skin Options window."""
+    for w in parent.findChildren(QDialog, "ArcMapSkinOptions"):
+        if not w.isVisible():
+            continue  # closed, deferred delete still pending
+        w.raise_()
+        w.activateWindow()
+        return w
+    dialog = SettingsDialog(plugin, parent)
+    dialog.show()
+    return dialog
 
 
 class SettingsFactory(QgsOptionsWidgetFactory):

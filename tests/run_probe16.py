@@ -38,8 +38,10 @@ def press_ok():
     lines.append("combo set: index=%s data=%s" % (combo.currentIndex(), combo.currentData()))
     # A message box like the one Processing shows while the pages are saved:
     # it opens right after accept() starts and closes itself a second later.
+    owner = dlg.parentWidget()
+
     def nag():
-        box = QMessageBox(QMessageBox.Icon.Warning, "Processing", "Nested modal during save", QMessageBox.StandardButton.Ok, dlg)
+        box = QMessageBox(QMessageBox.Icon.Warning, "Processing", "Nested modal during save", QMessageBox.StandardButton.Ok, owner)
         QTimer.singleShot(1200, box.accept)
         box.exec()
     QTimer.singleShot(0, nag)
@@ -70,7 +72,7 @@ def run():
         QgsProject.instance().addMapLayer(layer)
         lines.append("before: theme=%s on=%s" % (settings.theme(), plugin.on))
         QTimer.singleShot(2500, press_ok)
-        plugin.actions["skin_options"].trigger()
+        iface.showOptionsDialog(iface.mainWindow(), "mOptionsPageArcMapSkin")
         lines.append("dialog closed: theme=%s modal=%s" % (settings.theme(), QApplication.activeModalWidget() is not None))
         wait(300)
         lines.append("300ms later: icon_dir=%s busy=%s" % (os.path.basename(util._icon_dir()), plugin._busy))
@@ -81,6 +83,20 @@ def run():
         plugin.reapply()
         wait(1500)
         lines.append("restored: icon_dir=%s" % os.path.basename(util._icon_dir()))
+        # the plugin's own options window: pick dark, press OK
+        plugin.actions["skin_options"].trigger()
+        wait(500)
+        own = iface.mainWindow().findChild(QDialog, "ArcMapSkinOptions")
+        combo = own.findChild(QComboBox)
+        combo.setCurrentIndex(combo.findData("arcmap_dark"))
+        own.findChild(QDialogButtonBox).button(QDialogButtonBox.StandardButton.Ok).click()
+        wait(3000)
+        lines.append("own dialog OK: theme=%s icon_dir=%s open=%s" % (
+            settings.theme(), os.path.basename(util._icon_dir()),
+            any(d.isVisible() for d in iface.mainWindow().findChildren(QDialog, "ArcMapSkinOptions"))))
+        QgsSettings().setValue(settings.KEY_THEME, "arcmap_light")
+        plugin.reapply()
+        wait(1500)
     except Exception:
         lines.append(traceback.format_exc())
     with open(OUT, "w", encoding="utf-8") as fh:
