@@ -111,7 +111,7 @@ which is what the specs in `menus.py`, `toolbars.py` and `panes.py` rely on.
 
 ## Author
 
-Osman Geomatics – https://github.com/Osman-Geomatics93 – https://osman-geomatics93.online/
+Osman Osama Ahmed Ibrahim (osmangeomatics93@gmail.com) – https://github.com/Osman-Geomatics93 – https://osman-geomatics93.online/
 
 ## Licence
 
