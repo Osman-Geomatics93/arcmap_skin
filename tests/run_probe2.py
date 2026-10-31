@@ -113,9 +113,10 @@ def run():
             s.endGroup()
         s.endGroup()
         lines.append("templates dir: %s" % s.value("qgis/projectTemplateDir"))
-        from qgis.core import QgsNominatimGeocoder  # noqa: F401
-        lines.append("nominatim geocoder OK")
-        from qgis.gui import QgsDataSourceSelectDialog  # noqa: F401
+        import qgis.core
+        lines.append("nominatim geocoder %s" % hasattr(qgis.core, "QgsNominatimGeocoder"))
+        import qgis.gui
+        assert hasattr(qgis.gui, "QgsDataSourceSelectDialog")
         lines.append("QgsDataSourceSelectDialog OK")
         lines.append("renderer registry: %s" % [(r, QgsApplication.rendererRegistry().rendererMetadata(r).visibleName()) for r in QgsApplication.rendererRegistry().renderersList()])
     except Exception:

@@ -21,6 +21,7 @@ from .util import alive, arcmap_icon, find_dock, log_ignored, tr
 LEFT = Qt.DockWidgetArea.LeftDockWidgetArea
 RIGHT = Qt.DockWidgetArea.RightDockWidgetArea
 BOTTOM = Qt.DockWidgetArea.BottomDockWidgetArea
+TOP = Qt.DockWidgetArea.TopDockWidgetArea
 
 # objectName → (ArcMap title, default area, tabify with)
 PANES = {
@@ -41,6 +42,7 @@ PANES = {
     "VertexEditor": ("Sketch Properties", RIGHT, "Browser"),
     "LayerOrder": ("Drawing Order", LEFT, "Layers"),
     "ProcessingResults": ("Results", RIGHT, "Browser"),
+    "Temporal Controller": ("Time Slider", TOP, None),
 }
 
 DEFAULT_OPEN = ["Layers", "Browser", "ArcMapToolboxDock"]
@@ -179,14 +181,44 @@ def _dress_identify(changes, dock):
 
 def _dress_catalog(changes, dock, actions):
     dock.setWindowIcon(arcmap_icon("catalog"))
-    # ArcCatalog shows a preview/properties panel under the tree
+    # ArcCatalog's Contents / Preview / Description tabs: Preview and
+    # Description show QGIS's properties panel under the tree.
     from qgis.PyQt.QtGui import QAction
+    from qgis.PyQt.QtWidgets import QTabBar, QVBoxLayout
 
+    props = None
     for action in dock.findChildren(QAction):
         text = (action.text() + action.objectName()).lower()
         if "propert" in text and action.isCheckable():
-            action.setToolTip(tr("Preview / properties of the selected item"))
+            props = action
             break
+    old = dock.widget()
+    if props is not None and old is not None and not dock.property("arcmapCatalogTabs"):
+        dock.setProperty("arcmapCatalogTabs", True)
+        container = QWidget(dock)
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        tabs = QTabBar(container)
+        tabs.setObjectName("ArcMapCatalogTabs")
+        tabs.setExpanding(False)
+        for caption in ("Contents", "Preview", "Description"):
+            tabs.addTab(tr(caption))
+        tabs.setCurrentIndex(1 if props.isChecked() else 0)
+        tabs.currentChanged.connect(lambda i: props.setChecked(i > 0))
+        layout.addWidget(tabs)
+        layout.addWidget(old, 1)
+        dock.setWidget(container)
+
+        def undo(dock=dock, old=old, container=container):
+            if alive(dock) and alive(old):
+                old.setParent(dock)
+                dock.setWidget(old)
+                dock.setProperty("arcmapCatalogTabs", None)
+            if alive(container):
+                container.deleteLater()
+
+        changes.add(undo)
     connect = actions.get("connect_folder") if actions else None
     if connect is None:
         return

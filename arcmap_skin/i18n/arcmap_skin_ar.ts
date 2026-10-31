@@ -152,10 +152,6 @@
         <translation>&lt;الطبقات المرئية&gt;</translation>
     </message>
     <message>
-        <source>&lt;b&gt;ArcMap Skin&lt;/b&gt;&lt;br&gt;An ArcMap 10 look for QGIS.&lt;br&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;b&gt;ArcMap Skin&lt;/b&gt;&lt;br&gt;An ArcMap 10 look for QGIS.&lt;br&gt;&lt;br&gt;Not affiliated with, sponsored or endorsed by Esri.&lt;br&gt;Licensed under GPL-2.0-or-later.</source>
         <translation>&lt;b&gt;مظهر ArcMap&lt;/b&gt;&lt;br&gt;مظهر ArcMap 10 لبرنامج QGIS.&lt;br&gt;&lt;br&gt;غير تابع لشركة Esri ولا مدعوم أو معتمد منها.&lt;br&gt;مرخّص بموجب GPL-2.0 أو أحدث.</translation>
     </message>
@@ -182,6 +178,10 @@
     <message>
         <source>Add Basemap</source>
         <translation>إضافة خريطة أساس</translation>
+    </message>
+    <message>
+        <source>Add Basemap gallery</source>
+        <translation>معرض خرائط الأساس</translation>
     </message>
     <message>
         <source>Add Basemap…</source>
@@ -214,6 +214,10 @@
     <message>
         <source>Add Geometry Attributes</source>
         <translation>إضافة خصائص الهندسة</translation>
+    </message>
+    <message>
+        <source>Add Item (QGIS)</source>
+        <translation>إضافة عنصر (QGIS)</translation>
     </message>
     <message>
         <source>Add Join</source>
@@ -312,6 +316,18 @@
         <translation>مساعدة ArcGIS Desktop</translation>
     </message>
     <message>
+        <source>ArcMap (dark)</source>
+        <translation>ArcMap (داكن)</translation>
+    </message>
+    <message>
+        <source>ArcMap (light)</source>
+        <translation>ArcMap (فاتح)</translation>
+    </message>
+    <message>
+        <source>ArcMap Layout View</source>
+        <translation>عرض التخطيط بأسلوب ArcMap</translation>
+    </message>
+    <message>
         <source>ArcMap Options…</source>
         <translation>خيارات ArcMap…</translation>
     </message>
@@ -324,16 +340,60 @@
         <translation>مظهر ArcMap</translation>
     </message>
     <message>
+        <source>ArcMap Skin Options…</source>
+        <translation>خيارات مظهر ArcMap…</translation>
+    </message>
+    <message>
         <source>ArcMap Skin – Getting Started</source>
         <translation>مظهر ArcMap – البدء</translation>
+    </message>
+    <message>
+        <source>ArcMap Table window and Layer Properties tabs</source>
+        <translation>نافذة الجدول وعلامات تبويب خصائص الطبقة بأسلوب ArcMap</translation>
+    </message>
+    <message>
+        <source>ArcMap editing</source>
+        <translation>التحرير بأسلوب ArcMap</translation>
+    </message>
+    <message>
+        <source>ArcMap keyboard shortcuts</source>
+        <translation>اختصارات لوحة مفاتيح ArcMap</translation>
     </message>
     <message>
         <source>ArcMap look</source>
         <translation>مظهر ArcMap</translation>
     </message>
     <message>
+        <source>ArcMap menu bar</source>
+        <translation>شريط قوائم ArcMap</translation>
+    </message>
+    <message>
+        <source>ArcMap right-click menu in the Table Of Contents</source>
+        <translation>قائمة النقر الأيمن بأسلوب ArcMap في جدول المحتويات</translation>
+    </message>
+    <message>
+        <source>ArcMap right-click menu on the map</source>
+        <translation>قائمة النقر الأيمن على الخريطة بأسلوب ArcMap</translation>
+    </message>
+    <message>
+        <source>ArcMap status bar and Data/Layout View buttons</source>
+        <translation>شريط حالة ArcMap وأزرار عرض البيانات/التخطيط</translation>
+    </message>
+    <message>
+        <source>ArcMap symbology defaults</source>
+        <translation>إعدادات الترميز الافتراضية لـ ArcMap</translation>
+    </message>
+    <message>
+        <source>ArcMap toolbars</source>
+        <translation>أشرطة أدوات ArcMap</translation>
+    </message>
+    <message>
         <source>ArcToolbox</source>
         <translation>صندوق الأدوات ArcToolbox</translation>
+    </message>
+    <message>
+        <source>ArcToolbox pane</source>
+        <translation>لوحة ArcToolbox</translation>
     </message>
     <message>
         <source>Area</source>
@@ -352,6 +412,10 @@
         <translation>الاتجاه (Aspect)</translation>
     </message>
     <message>
+        <source>Attribute table, layer / project / options dialogs</source>
+        <translation>جدول الخصائص، مربعات حوار الطبقة / المشروع / الخيارات</translation>
+    </message>
+    <message>
         <source>Attributes</source>
         <translation>الخصائص</translation>
     </message>
@@ -366,6 +430,10 @@
     <message>
         <source>Average Nearest Neighbor</source>
         <translation>متوسط أقرب جار</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation>شريطي</translation>
     </message>
     <message>
         <source>Bar/Column</source>
@@ -390,6 +458,10 @@
     <message>
         <source>Bookmarks Panel</source>
         <translation>لوحة الإشارات المرجعية</translation>
+    </message>
+    <message>
+        <source>Box Plot</source>
+        <translation>مخطط صندوقي</translation>
     </message>
     <message>
         <source>Browse for an existing map</source>
@@ -452,6 +524,10 @@
         <translation>سنتيمتر</translation>
     </message>
     <message>
+        <source>Change Layout…</source>
+        <translation>تغيير التخطيط…</translation>
+    </message>
+    <message>
         <source>Charts</source>
         <translation>المخططات</translation>
     </message>
@@ -460,12 +536,20 @@
         <translation>فحص الهندسة</translation>
     </message>
     <message>
+        <source>Check Geometry…</source>
+        <translation>فحص الهندسة…</translation>
+    </message>
+    <message>
         <source>Checked layers can be identified and selected on the map</source>
         <translation>الطبقات المحددة يمكن التعرف عليها وتحديدها على الخريطة</translation>
     </message>
     <message>
         <source>Choose Units</source>
         <translation>اختيار الوحدات</translation>
+    </message>
+    <message>
+        <source>Choose which parts of the ArcMap look are applied. Changes take effect when you click OK or Apply.</source>
+        <translation>اختر أجزاء مظهر ArcMap التي تريد تطبيقها. تسري التغييرات عند النقر على موافق أو تطبيق.</translation>
     </message>
     <message>
         <source>Classify…</source>
@@ -540,6 +624,10 @@
         <translation>أدوات الإنشاء</translation>
     </message>
     <message>
+        <source>Contents</source>
+        <translation>المحتويات</translation>
+    </message>
+    <message>
         <source>Contour</source>
         <translation>خطوط الكنتور</translation>
     </message>
@@ -602,6 +690,10 @@
     <message>
         <source>Create Fishnet</source>
         <translation>إنشاء شبكة (Fishnet)</translation>
+    </message>
+    <message>
+        <source>Create Graph</source>
+        <translation>إنشاء رسم بياني</translation>
     </message>
     <message>
         <source>Create Layer From Selected Features</source>
@@ -772,6 +864,10 @@
         <translation>تجميع قائم على الكثافة</translation>
     </message>
     <message>
+        <source>Description</source>
+        <translation>الوصف</translation>
+    </message>
+    <message>
         <source>Dialogs</source>
         <translation>مربعات الحوار</translation>
     </message>
@@ -820,8 +916,16 @@
         <translation>إزالة Z / M</translation>
     </message>
     <message>
+        <source>Dynamic Text</source>
+        <translation>نص ديناميكي</translation>
+    </message>
+    <message>
         <source>Edge Snapping</source>
         <translation>التقاط الحواف</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>تحرير</translation>
     </message>
     <message>
         <source>Edit Attributes</source>
@@ -868,6 +972,10 @@
         <translation>شريط أدوات المحرر</translation>
     </message>
     <message>
+        <source>Elevation Profile</source>
+        <translation>المقطع الارتفاعي</translation>
+    </message>
+    <message>
         <source>Eliminate Polygon Part</source>
         <translation>إزالة جزء من المضلع</translation>
     </message>
@@ -902,6 +1010,10 @@
     <message>
         <source>Euclidean Distance</source>
         <translation>المسافة الإقليدية</translation>
+    </message>
+    <message>
+        <source>Every Processing tool in ArcMap toolboxes</source>
+        <translation>كل أدوات المعالجة في صناديق أدوات ArcMap</translation>
     </message>
     <message>
         <source>Excel / Table</source>
@@ -1040,6 +1152,10 @@
         <translation>ملف</translation>
     </message>
     <message>
+        <source>File, Edit, View, Bookmarks, Insert, Selection, Geoprocessing, Customize, Windows, Help</source>
+        <translation>ملف، تحرير، عرض، الإشارات المرجعية، إدراج، التحديد، المعالجة الجغرافية، تخصيص، النوافذ، مساعدة</translation>
+    </message>
+    <message>
         <source>Fill</source>
         <translation>ملء (Fill)</translation>
     </message>
@@ -1106,6 +1222,10 @@
     <message>
         <source>Focal Statistics</source>
         <translation>الإحصاءات البؤرية</translation>
+    </message>
+    <message>
+        <source>Focus Data Frame</source>
+        <translation>التركيز على إطار البيانات</translation>
     </message>
     <message>
         <source>Fonts</source>
@@ -1204,6 +1324,10 @@
         <translation>جلب القيم الفريدة</translation>
     </message>
     <message>
+        <source>Getting Started dialog at start-up</source>
+        <translation>مربع حوار البدء عند التشغيل</translation>
+    </message>
+    <message>
         <source>Getting Started…</source>
         <translation>البدء…</translation>
     </message>
@@ -1248,6 +1372,10 @@
         <translation>شبكة</translation>
     </message>
     <message>
+        <source>HTML</source>
+        <translation>HTML</translation>
+    </message>
+    <message>
         <source>HTML Popup</source>
         <translation>نافذة HTML المنبثقة</translation>
     </message>
@@ -1260,6 +1388,10 @@
         <translation>التظليل (Hillshade)</translation>
     </message>
     <message>
+        <source>Histogram</source>
+        <translation>مدرج تكراري</translation>
+    </message>
+    <message>
         <source>Hydrology</source>
         <translation>الهيدرولوجيا</translation>
     </message>
@@ -1270,6 +1402,10 @@
     <message>
         <source>IDW</source>
         <translation>IDW</translation>
+    </message>
+    <message>
+        <source>Icon theme</source>
+        <translation>سمة الأيقونات</translation>
     </message>
     <message>
         <source>Icons</source>
@@ -1312,6 +1448,14 @@
         <translation>الفهارس</translation>
     </message>
     <message>
+        <source>Insert</source>
+        <translation>إدراج</translation>
+    </message>
+    <message>
+        <source>Insert menu and Layout toolbar in the layout designer</source>
+        <translation>قائمة إدراج وشريط أدوات التخطيط في مصمم التخطيط</translation>
+    </message>
+    <message>
         <source>Interactive Selection Method</source>
         <translation>طريقة التحديد التفاعلي</translation>
     </message>
@@ -1342,6 +1486,10 @@
     <message>
         <source>Item Description</source>
         <translation>وصف العنصر</translation>
+    </message>
+    <message>
+        <source>Items</source>
+        <translation>العناصر</translation>
     </message>
     <message>
         <source>Joins</source>
@@ -1390,6 +1538,10 @@
     <message>
         <source>Label Manager</source>
         <translation>مدير التسميات</translation>
+    </message>
+    <message>
+        <source>Label Manager and Labeling toolbar</source>
+        <translation>مدير التسميات وشريط أدوات التسمية</translation>
     </message>
     <message>
         <source>Label Manager…</source>
@@ -1448,8 +1600,16 @@
         <translation>التخطيط</translation>
     </message>
     <message>
+        <source>Layout Properties…</source>
+        <translation>خصائص التخطيط…</translation>
+    </message>
+    <message>
         <source>Layout View</source>
         <translation>عرض التخطيط</translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation>مفتاح الخريطة</translation>
     </message>
     <message>
         <source>Length: %s %s</source>
@@ -1478,6 +1638,10 @@
     <message>
         <source>List By Visibility</source>
         <translation>عرض حسب الظهور</translation>
+    </message>
+    <message>
+        <source>List By views, Catalog, ArcToolbox, Search, pane titles</source>
+        <translation>عروض List By، الكتالوج، ArcToolbox، البحث، عناوين اللوحات</translation>
     </message>
     <message>
         <source>Load Expression</source>
@@ -1566,10 +1730,6 @@
     <message>
         <source>Measure</source>
         <translation>قياس</translation>
-    </message>
-    <message>
-        <source>Measure Line and Measure Area use the QGIS measure dialog; </source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Measure Line and Measure Area use the QGIS measure dialog; Measure a Feature reports the clicked feature here.</source>
@@ -1722,6 +1882,10 @@
     <message>
         <source>Near</source>
         <translation>الأقرب (Near)</translation>
+    </message>
+    <message>
+        <source>Neatline</source>
+        <translation>إطار الخريطة</translation>
     </message>
     <message>
         <source>Neighborhood</source>
@@ -1892,6 +2056,10 @@
         <translation>لصق الترميز</translation>
     </message>
     <message>
+        <source>Pastel fills, cyan selection, Arial labels, ArcMap colour ramps</source>
+        <translation>تعبئات فاتحة، تحديد سماوي، تسميات Arial، تدرجات ألوان ArcMap</translation>
+    </message>
+    <message>
         <source>Pause Drawing</source>
         <translation>إيقاف الرسم مؤقتًا</translation>
     </message>
@@ -1952,6 +2120,10 @@
         <translation>نقاط إلى خط</translation>
     </message>
     <message>
+        <source>Polar</source>
+        <translation>قطبي</translation>
+    </message>
+    <message>
         <source>Polygon To Line</source>
         <translation>مضلع إلى خط</translation>
     </message>
@@ -1962,6 +2134,10 @@
     <message>
         <source>Powered by OpenStreetMap Nominatim</source>
         <translation>مدعوم من OpenStreetMap Nominatim</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation>معاينة</translation>
     </message>
     <message>
         <source>Preview / properties of the selected item</source>
@@ -1998,6 +2174,10 @@
     <message>
         <source>Projections and Transformations</source>
         <translation>الإسقاطات والتحويلات</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation>الخصائص</translation>
     </message>
     <message>
         <source>Properties…</source>
@@ -2124,6 +2304,10 @@
         <translation>إعادة</translation>
     </message>
     <message>
+        <source>Redraw QGIS icons in the ArcMap style (layer icons need a restart)</source>
+        <translation>إعادة رسم أيقونات QGIS بأسلوب ArcMap (أيقونات الطبقات تحتاج إعادة تشغيل)</translation>
+    </message>
+    <message>
         <source>Refactor Fields</source>
         <translation>إعادة هيكلة الحقول</translation>
     </message>
@@ -2168,6 +2352,10 @@
         <translation>إصلاح الهندسة</translation>
     </message>
     <message>
+        <source>Repair Geometry…</source>
+        <translation>إصلاح الهندسة…</translation>
+    </message>
+    <message>
         <source>Replace</source>
         <translation>استبدال</translation>
     </message>
@@ -2178,6 +2366,10 @@
     <message>
         <source>Replace with:</source>
         <translation>استبدال بـ:</translation>
+    </message>
+    <message>
+        <source>Replaces the QGIS status bar</source>
+        <translation>يستبدل شريط حالة QGIS</translation>
     </message>
     <message>
         <source>Report…</source>
@@ -2266,6 +2458,10 @@
     <message>
         <source>Scale Bar</source>
         <translation>مقياس الرسم</translation>
+    </message>
+    <message>
+        <source>Scatter</source>
+        <translation>مبعثر</translation>
     </message>
     <message>
         <source>Scripts</source>
@@ -2528,6 +2724,10 @@
         <translation>قياسي</translation>
     </message>
     <message>
+        <source>Standard, Tools, Editor, Draw, Labeling, Layout… built from QGIS commands</source>
+        <translation>قياسي، الأدوات، المحرر، رسم، التسمية، التخطيط… مبنية من أوامر QGIS</translation>
+    </message>
+    <message>
         <source>Start Editing</source>
         <translation>بدء التحرير</translation>
     </message>
@@ -2542,6 +2742,10 @@
     <message>
         <source>Start/Stop Editing</source>
         <translation>بدء/إيقاف التحرير</translation>
+    </message>
+    <message>
+        <source>Start/Stop Editing, Create Features, Snapping toolbar, Edit Tool, Attributes window</source>
+        <translation>بدء/إيقاف التحرير، إنشاء المعالم، شريط الالتقاط، أداة التحرير، نافذة الخصائص</translation>
     </message>
     <message>
         <source>Statistics</source>
@@ -2572,6 +2776,10 @@
         <translation>مدير الأنماط…</translation>
     </message>
     <message>
+        <source>Style References…</source>
+        <translation>مراجع الأنماط…</translation>
+    </message>
+    <message>
         <source>Style sheet</source>
         <translation>ورقة الأنماط</translation>
     </message>
@@ -2600,6 +2808,10 @@
         <translation>تشغيل مظهر ArcMap أو إيقافه</translation>
     </message>
     <message>
+        <source>Symbol Selector</source>
+        <translation>منتقي الرموز</translation>
+    </message>
+    <message>
         <source>Symbology</source>
         <translation>الترميز</translation>
     </message>
@@ -2622,6 +2834,10 @@
     <message>
         <source>Table Of Contents</source>
         <translation>جدول المحتويات</translation>
+    </message>
+    <message>
+        <source>Table Of Contents and panes</source>
+        <translation>جدول المحتويات واللوحات</translation>
     </message>
     <message>
         <source>Table Of Contents menu</source>
@@ -2674,6 +2890,10 @@
     <message>
         <source>The expression was successfully verified.</source>
         <translation>تم التحقق من التعبير بنجاح.</translation>
+    </message>
+    <message>
+        <source>Theme:</source>
+        <translation>السمة:</translation>
     </message>
     <message>
         <source>There are no editable layers in the map.</source>
@@ -2834,6 +3054,10 @@
         <translation>التقاط الرؤوس</translation>
     </message>
     <message>
+        <source>View</source>
+        <translation>عرض</translation>
+    </message>
+    <message>
         <source>View Item Description…</source>
         <translation>عرض وصف العنصر…</translation>
     </message>
@@ -2870,6 +3094,10 @@
         <translation>ياردة</translation>
     </message>
     <message>
+        <source>Z zoom in, X zoom out, C pan, S select, I identify</source>
+        <translation>Z تكبير، X تصغير، C تحريك، S تحديد، I تعرف</translation>
+    </message>
+    <message>
         <source>Zonal</source>
         <translation>المناطق</translation>
     </message>
@@ -2880,6 +3108,10 @@
     <message>
         <source>Zonal Statistics</source>
         <translation>إحصاءات المناطق</translation>
+    </message>
+    <message>
+        <source>Zoom</source>
+        <translation>تكبير</translation>
     </message>
     <message>
         <source>Zoom Data</source>
@@ -2918,12 +3150,24 @@
         <translation>التكبير إلى المعالم المحددة</translation>
     </message>
     <message>
+        <source>Zoom Whole Page</source>
+        <translation>تكبير الصفحة كاملة</translation>
+    </message>
+    <message>
+        <source>Zoom to 100%</source>
+        <translation>تكبير إلى 100%</translation>
+    </message>
+    <message>
+        <source>Zoom to Page Width</source>
+        <translation>تكبير إلى عرض الصفحة</translation>
+    </message>
+    <message>
         <source>feature</source>
         <translation>معلم</translation>
     </message>
     <message>
         <source>layer</source>
-        <translation type="unfinished"></translation>
+        <translation>طبقة</translation>
     </message>
 </context>
 </TS>

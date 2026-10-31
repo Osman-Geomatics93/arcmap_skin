@@ -1,0 +1,42 @@
+/* ArcMap Skin dark palette. Shares style.qss with arcmap_light. */
+@font: "Segoe UI";
+@font-size: 9pt;
+
+@bg-window: #2b2b2b;
+@bg-panel: #1f1f1f;
+@bg-toolbar: #303030;
+@bg-header: #3a3f47;
+@bg-title: #383d45;
+@bg-title-active: #2f4a6b;
+@bg-statusbar: #2b2b2b;
+
+@text: #e6e6e6;
+@text-dim: #b8b8b8;
+@text-disabled: #777777;
+@text-title: #dbe6f5;
+
+@accent: #5b9bd5;
+@accent-dark: #3b78c4;
+@selected: #2f4a6b;
+@selected-hover: #3a5a80;
+@hover: #3a3f47;
+@pressed: #2f4a6b;
+
+@border: #555555;
+@border-light: #444444;
+@border-input: #5a5a5a;
+@border-hover: #5b9bd5;
+
+@scrollbar-bg: #2b2b2b;
+@scrollbar-handle: #555555;
+@scrollbar-handle-hover: #6a6a6a;
+
+@bg-button: #3a3a3a;
+@bg-alternate: #262626;
+@bg-header-row: #333333;
+@selected-inactive: #3d4450;
+@tooltip-bg: #3a3a3a;
+@tooltip-text: #e6e6e6;
+@tooltip-border: #666666;
+@table-selected: #1d6b7a;
+@table-selected-text: #ffffff;

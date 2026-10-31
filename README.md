@@ -1,5 +1,7 @@
 # ArcMap Skin for QGIS
 
+[![CI](https://github.com/Osman-Geomatics93/arcmap_skin/actions/workflows/ci.yml/badge.svg)](https://github.com/Osman-Geomatics93/arcmap_skin/actions/workflows/ci.yml)
+
 ArcMap Skin gives QGIS the look and layout of **ArcMap 10**, drawn flat and
 modern: the classic menu bar, dockable Standard / Tools / Editor toolbars,
 a Table Of Contents with *List By* views, Catalog, Search and ArcToolbox
@@ -47,7 +49,32 @@ from QGIS's own icons (GPL).
 | Magnifier | Floating magnifier following the mouse at 200–1000 %. |
 | Customize dialog | Toolbars (show/hide), Commands (find any command, add it to a toolbar, run it), Options (start-up behaviour, large icons, keyboard, interface customization). |
 | Status bar | "Drawing…" indicator, task progress bar and a running-tasks button, which the hidden QGIS status bar used to provide. |
-| Languages | English and Arabic (`scripts/i18n.py` builds the `.qm` without Qt tools). |
+| Layout View | The QGIS layout designer gets ArcMap's Insert menu (Data Frame, Title, Text, Dynamic Text, Neatline, Legend, North Arrow, Scale Bar, Picture, Table, HTML) and a Layout toolbar (Zoom In/Out, Pan, Zoom Whole Page, 100 %, Page Width, Change Layout, Page and Print Setup, Print, Export, Focus Data Frame). |
+| Advanced Editing, Topology | ArcMap's Advanced Editing (Copy Features, Copy Parallel, Trim/Extend, Generalize, rings and parts, scale, shapes) and Topology toolbars from QGIS tools. |
+| Time Slider | The Temporal Controller as ArcMap's Time Slider window. |
+| Create Graph | Table Options ▸ Create Graph (bar, scatter, histogram, box plot, polar) on QGIS's plot algorithms. |
+| Catalog tabs | Contents / Preview / Description tabs over the Catalog tree, as in ArcCatalog. |
+| Symbol Selector | ArcMap wording on QGIS's symbol selector (full gallery, Properties, Save As…). |
+| Settings page | *Customize ▸ ArcMap Skin Options…* (also a page in QGIS Options): switch each feature on or off, choose the light or dark ArcMap theme, start-up behaviour. |
+| Dark theme | ArcMap (dark): dark palette with light icon variants. |
+| Languages | English, Arabic, Turkish, French and Spanish (`scripts/i18n.py` builds the `.qm` without Qt tools). |
+| Quality | GitHub Actions run pyflakes, Bandit (the plugins.qgis.org scanner), the unit tests and the zip validator on every push; a tag `vX.Y.Z` builds and publishes the release zip. A Qt5/Qt6 lint test keeps the sources QGIS 4 compatible. |
+
+## Screenshots
+
+| Overview | Table window | Query Builder |
+|---|---|---|
+| ![overview](docs/images/on.png) | ![table](docs/images/table.png) | ![query](docs/images/query.png) |
+
+| ArcToolbox | Layer Properties | Find |
+|---|---|---|
+| ![toolbox](docs/images/toolbox.png) | ![props](docs/images/props.png) | ![find](docs/images/find.png) |
+
+| Dark theme |
+|---|
+| ![dark](docs/images/dark.png) |
+
+Coming from ArcMap? See [Where is it? ArcMap → QGIS](docs/ARCMAP_TO_QGIS.md).
 
 ## Requirements
 
@@ -108,6 +135,7 @@ which is what the specs in `menus.py`, `toolbars.py` and `panes.py` rely on.
 | `toc_menu.py` | ArcMap context menu for the Table Of Contents |
 | `basemaps.py`, `find.py`, `editing.py`, `shortcuts.py`, `getting_started.py` | basemap gallery, Find window, editing workflow and snapping toolbar, keyboard shortcuts, start-up dialog |
 | `edit_tool.py`, `attributes_window.py`, `label_manager.py`, `measure.py`, `magnifier.py`, `customize.py`, `canvas_menu.py` | Edit Tool, Attributes window, Label Manager, Measure and Magnifier windows, Customize dialog, map right-click menu |
+| `settings.py`, `layout_designer.py` | feature switches / Options page, ArcMap Layout View in the layout designer |
 
 ## Author
 

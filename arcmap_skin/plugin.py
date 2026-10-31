@@ -24,6 +24,8 @@ from . import (
     edit_tool,
     editing,
     label_manager,
+    layout_designer,
+    settings as skin_settings,
     getting_started,
     shortcuts,
     toc_menu,
@@ -75,6 +77,9 @@ class ArcMapSkinPlugin:
         self.action.setToolTip(tr("Switch the ArcMap look on or off"))
         self.action.triggered.connect(self.toggle)
         self.iface.addPluginToMenu(tr("&ArcMap Skin"), self.action)
+        # "ArcMap Skin" page in QGIS Options with the feature switches
+        self.options_factory = skin_settings.SettingsFactory(self)
+        self.iface.registerOptionsWidgetFactory(self.options_factory)
 
         if QgsSettings().value(KEY_ENABLED, True, type=bool):
             if self.win.isVisible():
@@ -117,6 +122,21 @@ class ArcMapSkinPlugin:
             self.iface.removePluginMenu(tr("&ArcMap Skin"), self.action)
             self.action.deleteLater()
             self.action = None
+        factory = getattr(self, "options_factory", None)
+        if factory is not None:
+            self.iface.unregisterOptionsWidgetFactory(factory)
+            self.options_factory = None
+
+    def reapply(self):
+        """Switch the look off and on again (after settings changed)."""
+        if not self.on or self._busy:
+            return
+        try:
+            self.disable(remember=False)
+            self.enable()
+        except Exception as exc:  # noqa: BLE001
+            traceback.print_exc()
+            log("Could not re-apply: %s" % exc, Qgis.MessageLevel.Warning)
 
     # -------------------------------------------------------------- toggle
 
@@ -160,29 +180,34 @@ class ArcMapSkinPlugin:
     # -------------------------------------------------------------- enable
 
     def _steps(self):
+        """(name, weight, callback, feature key) – steps whose feature is
+        switched off in the ArcMap Skin options page are skipped."""
         iface, changes = self.iface, self.changes
-        return [
-            (tr("Style sheet"), 1, self._apply_stylesheet),
-            (tr("Icons"), 4, lambda: icon_theme.apply_icon_theme(iface, changes)),
-            (tr("Window"), 1, self._apply_window),
-            (tr("Commands"), 1, self._apply_actions),
-            (tr("ArcToolbox"), 1, lambda: arctoolbox.install_arctoolbox(iface, changes, self.actions)),
-            (tr("Editing"), 1, lambda: editing.install_editing(iface, changes, self.actions)),
-            (tr("Edit tool"), 1, lambda: edit_tool.install_edit_tool(iface, changes, self.actions)),
-            (tr("Attributes"), 1, lambda: attributes_window.install_attributes_window(iface, changes, self.actions)),
-            (tr("Labeling"), 1, lambda: label_manager.install_label_manager(iface, changes, self.actions)),
+        on = skin_settings.enabled
+        steps = [
+            (tr("Style sheet"), 1, self._apply_stylesheet, None),
+            (tr("Icons"), 4, lambda: icon_theme.apply_icon_theme(iface, changes), "icon_theme"),
+            (tr("Window"), 1, self._apply_window, None),
+            (tr("Commands"), 1, self._apply_actions, None),
+            (tr("ArcToolbox"), 1, lambda: arctoolbox.install_arctoolbox(iface, changes, self.actions), "arctoolbox"),
+            (tr("Editing"), 1, lambda: editing.install_editing(iface, changes, self.actions), "editing"),
+            (tr("Edit tool"), 1, lambda: edit_tool.install_edit_tool(iface, changes, self.actions), "editing"),
+            (tr("Attributes"), 1, lambda: attributes_window.install_attributes_window(iface, changes, self.actions), "editing"),
+            (tr("Labeling"), 1, lambda: label_manager.install_label_manager(iface, changes, self.actions), "label_manager"),
             (tr("Menus"), 1, lambda: menus.build_menus(
-                iface, changes, self.actions, lambda parent: toolbars.toolbars_menu(self.win, parent))),
-            (tr("Toolbars"), 2, lambda: toolbars.build_toolbars(iface, changes, self.actions)),
-            (tr("Panes"), 2, lambda: panes.arrange_panes(iface, changes, self.actions)),
-            (tr("Table Of Contents menu"), 1, lambda: toc_menu.install_toc_menu(iface, changes, self.actions)),
-            (tr("Shortcuts"), 1, lambda: shortcuts.apply_shortcuts(iface, changes)),
-            (tr("Map menu"), 1, lambda: canvas_menu.install_canvas_menu(iface, changes, self.actions)),
-            (tr("Map frame"), 1, lambda: mapview.frame_map(iface, changes, self.actions)),
-            (tr("Symbology"), 1, lambda: symbology.apply_symbology(iface, changes)),
-            (tr("Dialogs"), 1, lambda: dialogs.dress_windows(iface, changes)),
-            (tr("Layout"), 1, self._apply_layout),
+                iface, changes, self.actions, lambda parent: toolbars.toolbars_menu(self.win, parent)), "menus"),
+            (tr("Toolbars"), 2, lambda: toolbars.build_toolbars(iface, changes, self.actions), "toolbars"),
+            (tr("Panes"), 2, lambda: panes.arrange_panes(iface, changes, self.actions), "panes"),
+            (tr("Table Of Contents menu"), 1, lambda: toc_menu.install_toc_menu(iface, changes, self.actions), "toc_menu"),
+            (tr("Shortcuts"), 1, lambda: shortcuts.apply_shortcuts(iface, changes), "shortcuts"),
+            (tr("Map menu"), 1, lambda: canvas_menu.install_canvas_menu(iface, changes, self.actions), "canvas_menu"),
+            (tr("Map frame"), 1, lambda: mapview.frame_map(iface, changes, self.actions), "map_frame"),
+            (tr("Symbology"), 1, lambda: symbology.apply_symbology(iface, changes), "symbology"),
+            (tr("Dialogs"), 1, lambda: dialogs.dress_windows(iface, changes), "dialogs"),
+            (tr("Layout View"), 1, lambda: layout_designer.install_layout_designer(iface, changes), "layout_designer"),
+            (tr("Layout"), 1, self._apply_layout, None),
         ]
+        return [(name, weight, callback) for name, weight, callback, key in steps if key is None or on(key)]
 
     def _apply_actions(self):
         self.actions = custom_actions(self.iface, self.changes)
@@ -248,7 +273,8 @@ class ArcMapSkinPlugin:
         log("ArcMap look on (%d changes recorded)" % len(self.changes))
         if self._startup:
             self._startup = False
-            QTimer.singleShot(800, lambda: getting_started.maybe_show(self.iface) if self.on else None)
+            if skin_settings.enabled("getting_started"):
+                QTimer.singleShot(800, lambda: getting_started.maybe_show(self.iface) if self.on else None)
 
     def _remove_stale_widgets(self):
         """Delete ArcMap toolbars, menus and panes left over from an earlier
@@ -291,7 +317,7 @@ class ArcMapSkinPlugin:
             log("Removed %d stale ArcMap widgets before applying the look" % stale, Qgis.MessageLevel.Warning)
 
     def _apply_stylesheet(self):
-        block = stylesheet.load_qss("arcmap_light")
+        block = stylesheet.load_qss(skin_settings.theme())
         self._sheet = stylesheet.StyleSheetBlock(self.win, block)
 
         def undo(sheet=self._sheet):

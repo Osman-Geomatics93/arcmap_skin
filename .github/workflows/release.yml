@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the plugin zip
+        run: |
+          python scripts/package.py
+          python scripts/validate.py dist/*.zip
+      - name: Check the tag matches metadata.txt
+        run: |
+          VERSION=$(grep '^version=' arcmap_skin/metadata.txt | cut -d= -f2)
+          test "v$VERSION" = "${GITHUB_REF_NAME}" || (echo "tag ${GITHUB_REF_NAME} != metadata version $VERSION" && exit 1)
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true

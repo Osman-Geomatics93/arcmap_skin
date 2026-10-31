@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: qgis/qgis:3.44
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install analysis tools
+        run: python3 -m pip install --break-system-packages pyflakes bandit
+      - name: pyflakes
+        run: python3 -m pyflakes arcmap_skin scripts tests
+      - name: Bandit security scan (same scanner as plugins.qgis.org)
+        run: python3 -m bandit -r arcmap_skin -q
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Build and validate the plugin zip
+        run: |
+          python3 scripts/package.py
+          python3 scripts/validate.py dist/*.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arcmap_skin-zip
+          path: dist/*.zip

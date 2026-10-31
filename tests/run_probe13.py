@@ -126,7 +126,6 @@ def reinstall_inside_manager():
 def run():
     import qgis.utils as utils
     from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsProject, QgsVectorLayer
-    from qgis.PyQt.QtWidgets import QDockWidget
 
     iface = utils.iface
     win = iface.mainWindow()

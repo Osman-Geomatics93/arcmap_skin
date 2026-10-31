@@ -1,4 +1,3 @@
-﻿import os
 from qgis.PyQt.QtCore import QEventLoop, QTimer
 OUT = "D:/QGIS_Plugins/Arcmap_Skin/tests/probe9_result.txt"
 lines = []

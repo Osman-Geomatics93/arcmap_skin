@@ -84,6 +84,7 @@ TABLE_OPTIONS = [
     ("@joins", "spatial_join", "Joins and Relates"),
     ("@related", None, "Related Tables"),
     SEP,
+    ("@graph", "statistics", "Create Graph"),
     ("mActionSelectedToTop", "selected_to_top", "Move Selected To Top"),
     ("mActionSearchForm", None, "Select By Form…"),
     ("mActionOpenFieldCalculator", "field_calculator", "Field Calculator…"),
@@ -614,12 +615,19 @@ def dress_attribute_table(changes, dialog, iface=None):
             pending = bool(options.actions())
             continue
         name, icon, caption = entry
-        action = resolve(name)
+        action = resolve(name) if name not in ("@joins", "@graph") else True
         if action is None or isinstance(action, QWidgetAction):
             continue
         if pending:
             options.addSeparator()
             pending = False
+        if name == "@graph":
+            graphs = options.addMenu(arcmap_icon("statistics"), tr("Create Graph"))
+            for caption, alg in (("Bar", "qgis:barplot"), ("Scatter", "qgis:scatterplot"),
+                                 ("Histogram", "qgis:vectorlayerhistogram"), ("Box Plot", "qgis:boxplot"),
+                                 ("Polar", "qgis:polarplot")):
+                graphs.addAction(tr(caption) + "…", lambda _=False, a=alg: _run_alg(a, {"INPUT": layer}))
+            continue
         if name == "@joins":
             joins = options.addMenu(arcmap_icon("spatial_join"), tr("Joins and Relates"))
             joins.addAction(tr("Join…"), lambda: _run_alg("native:joinattributestable", {"INPUT": layer}))

@@ -203,6 +203,13 @@ def custom_actions(iface, changes):
         open_customize(iface, acts)
 
     make("customize", tr("Customize Mode…"), "customize", customize)
+    make("check_geometry", tr("Check Geometry…"), "statistics", lambda: _run_algorithm("native:checkvalidity"))
+    make("repair_geometry", tr("Repair Geometry…"), "repair", lambda: _run_algorithm("native:fixgeometries"))
+
+    def skin_options():
+        iface.showOptionsDialog(win, "mOptionsPageArcMapSkin")
+
+    make("skin_options", tr("ArcMap Skin Options…"), "options", skin_options)
 
     # --- views
     def layout_view():

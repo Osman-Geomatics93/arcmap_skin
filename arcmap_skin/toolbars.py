@@ -185,6 +185,21 @@ TOOLBARS = [
         "mActionTemporalController",
         "mActionNewMapCanvas",
     ]),
+    ("ArcMapAdvancedEditingToolBar", "Advanced Editing", [
+        "mActionMoveFeatureCopy", "mActionOffsetCurve", "mActionTrimExtendFeature", "mActionSimplifyFeature",
+        SEP,
+        "mActionAddRing", "mActionFillRing", "mActionDeleteRing", "mActionAddPart", "mActionDeletePart",
+        SEP,
+        "mActionScaleFeature", "mActionRotatePointSymbols", "mActionOffsetPointSymbol",
+        SEP,
+        ("native", "mShapeDigitizeToolBar"),
+    ]),
+    ("ArcMapTopologyToolBar", "Topology", [
+        "TopologicalEditingAction", "IntersectionSnappingAction", "SelfSnappingAction",
+        SEP,
+        ("custom", "check_geometry"), ("custom", "repair_geometry"),
+        "mActionVertexTool",
+    ]),
     ("ArcMapLayoutToolBar", "Layout", [
         "mActionNewPrintLayout", "mActionShowLayoutManager", "mActionNewReport",
         SEP,
@@ -290,6 +305,12 @@ class ToolBarBuilder:
             return self.menu_button(item, parent)
         if kind == "widget":
             return self.widget(item[1], parent)
+        if kind == "native":
+            tb = find_toolbar(self.win, item[1])
+            if tb is None:
+                return None
+            return [a for a in tb.actions() if not a.isSeparator() and a.objectName()
+                    and a.metaObject().className() == "QAction"]
         return None
 
     def fill_menu(self, menu, items):
@@ -388,6 +409,9 @@ class ToolBarBuilder:
                 pending = False
             if isinstance(result, QAction):
                 tb.addAction(result)
+            elif isinstance(result, list):
+                for a in result:
+                    tb.addAction(a)
             else:
                 tb.addWidget(result)
         if not tb.actions():

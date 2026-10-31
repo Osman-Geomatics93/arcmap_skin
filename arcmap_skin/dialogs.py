@@ -11,7 +11,7 @@ from qgis.PyQt.QtCore import QObject, Qt, QTimer
 from qgis.PyQt.QtGui import QGuiApplication
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QMenu, QWidget
 
-from .util import tr
+from .util import alive, tr
 
 from .attribute_table import TABLE_DONE, dress_attribute_table  # noqa: F401
 
@@ -94,6 +94,7 @@ OPTIONS_TABS = [
     ("Data Sources", "mOptionsPageDataSources"),
     ("Colors", "mOptionsPageColors"),
     ("Fonts", "mOptionsPageFonts"),
+    ("ArcMap Skin", "mOptionsPageArcMapSkin"),
 ]
 TABS_BY_CLASS = {
     "QgsVectorLayerProperties": VECTOR_TABS,
@@ -222,6 +223,8 @@ class ArcMapPropertyTabs(QWidget):
             open_definition_query(self.iface, layer)
 
     def remove(self):
+        if not alive(self):  # the dialog was closed and deleted already
+            return
         try:
             self.list.currentRowChanged.disconnect(self._row_changed)
         except (TypeError, RuntimeError):
@@ -309,6 +312,8 @@ class OptionsTabs(QWidget):
         self._syncing = False
 
     def remove(self):
+        if not alive(self):  # the dialog was closed and deleted already
+            return
         try:
             self.stack.currentChanged.disconnect(self._page_changed)
         except (TypeError, RuntimeError):
@@ -446,6 +451,25 @@ class SymbologyTree(QWidget):
                 return
 
 
+def dress_symbol_selector(dialog):
+    """ArcMap's Symbol Selector wording: full gallery, Properties button."""
+    from qgis.PyQt.QtWidgets import QComboBox, QPushButton
+
+    if dialog.property(PAGES_DONE):
+        return
+    dialog.setProperty(PAGES_DONE, True)
+    dialog.setWindowTitle(tr("Symbol Selector"))
+    combo = dialog.findChild(QComboBox, "groupsCombo")
+    if combo is not None:
+        index = combo.findText("All Symbols")
+        if index >= 0:
+            combo.setCurrentIndex(index)
+    for name, caption in (("btnAdvanced", "Properties"), ("btnSaveSymbol", "Save As…"),
+                          ("openStyleManagerButton", "Style References…")):
+        for b in dialog.findChildren(QPushButton, name):
+            b.setText(tr(caption))
+
+
 def dress_renderer_combos(widget):
     """ArcMap renderer wording, the "Show:" tree and ArcMap button captions."""
     from qgis.PyQt.QtWidgets import QComboBox, QGridLayout, QHBoxLayout, QPushButton, QVBoxLayout
@@ -525,6 +549,8 @@ class WindowDresser(QObject):
         for w in candidates:
             if w.metaObject().className() in TABS_BY_CLASS:
                 dress_layer_properties(self.changes, w, self.iface)
+            if w.metaObject().className() == "QgsSymbolSelectorDialog":
+                dress_symbol_selector(w)
             dress_renderer_combos(w)
             if w.objectName().startswith("QgsAttributeTableDialog") and not w.property(TABLE_DONE):
                 try:

@@ -34,7 +34,6 @@ def inspect_modal(tag):
     wait(300)
     bar = w.findChild(QTabBar, "ArcMapPropertyTabBar")
     lines.append("[%s] %s tabs=%s" % (tag, w.metaObject().className(), [bar.tabText(i) for i in range(bar.count())] if bar else None))
-    tree = w.findChild(QTreeWidget)
     trees = [t for t in w.findChildren(QTreeWidget) if t.parent() and t.parent().objectName() == "ArcMapSymbologyTree"]
     lines.append("[%s] symbology tree present=%s" % (tag, bool(trees)))
     if trees and bar:

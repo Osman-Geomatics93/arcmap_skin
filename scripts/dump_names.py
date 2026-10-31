@@ -5,7 +5,7 @@ top-level menus, dock widgets and status-bar widgets. Use it to check a new
 QGIS version before adjusting the specs in menus.py / toolbars.py / panes.py.
 """
 
-from qgis.PyQt.QtWidgets import QDockWidget, QMenuBar, QToolBar
+from qgis.PyQt.QtWidgets import QDockWidget, QToolBar
 from qgis.utils import iface
 
 win = iface.mainWindow()

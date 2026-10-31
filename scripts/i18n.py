@@ -24,7 +24,13 @@ PKG = os.path.join(ROOT, "arcmap_skin")
 I18N = os.path.join(PKG, "i18n")
 CONTEXT = "ArcMapSkin"
 
-TR_RE = re.compile(r'\btr\(\s*(["\'])((?:\\.|(?!\1).)*)\1')
+# tr("a" "b") – adjacent literals (implicit concatenation) form one string
+TR_RE = re.compile(r'\btr\(\s*((?:(["\'])(?:\\.|(?!\2).)*\2\s*)+)')
+PIECE_RE = re.compile(r'(["\'])((?:\\.|(?!\1).)*)\1')
+
+
+def _unescape(text):
+    return text.encode("utf-8").decode("unicode_escape") if "\\" in text else text
 
 
 def literal_strings():
@@ -35,8 +41,7 @@ def literal_strings():
         with open(os.path.join(PKG, name), encoding="utf-8") as fh:
             src = fh.read()
         for m in TR_RE.finditer(src):
-            text = m.group(2).encode("utf-8").decode("unicode_escape") if "\\" in m.group(2) else m.group(2)
-            out.add(text)
+            out.add("".join(_unescape(piece.group(2)) for piece in PIECE_RE.finditer(m.group(1))))
     return out
 
 
@@ -78,6 +83,17 @@ def table_strings():
     out |= {caption for _, _, caption in editing.CreateFeaturesDock.CONSTRUCTION}
     out |= {tip for _, tip, _ in editing.SnappingToolBar.TOGGLES}
     out |= {text for text, _ in query_builder.METHODS}
+    from arcmap_skin import layout_designer, settings
+
+    for key, caption, description in settings.FEATURES:
+        out.add(caption)
+        if description:
+            out.add(description)
+    out |= {caption for _, caption in settings.THEMES}
+    out |= {entry[1] for entry in layout_designer.INSERT_ITEMS if entry}
+    out |= {entry[1] for entry in layout_designer.LAYOUT_TOOLBAR if entry}
+    out |= set(layout_designer.MENU_CAPTIONS.values())
+    out |= {"Contents", "Preview", "Description", "Bar", "Scatter", "Histogram", "Box Plot", "Polar"}
     return out
 
 
@@ -178,10 +194,13 @@ def main(argv):
     n = write_qm(os.path.join(I18N, "arcmap_skin_%s.qm" % lang), {s: translations.get(s, "") for s in strings})
     missing = [s for s in strings if not translations.get(s)]
     print("%d strings, %d translated, %d missing -> %s" % (len(strings), n, len(missing), I18N))
-    if "--list-missing" in argv or missing and len(missing) < 400:
-        with open(os.path.join(I18N, "missing_%s.txt" % lang), "w", encoding="utf-8") as fh:
+    missing_path = os.path.join(I18N, "missing_%s.txt" % lang)
+    if missing:
+        with open(missing_path, "w", encoding="utf-8") as fh:
             fh.write("\n".join(missing) + "\n")
         print("missing strings written to missing_%s.txt" % lang)
+    elif os.path.exists(missing_path):
+        os.remove(missing_path)
 
 
 if __name__ == "__main__":

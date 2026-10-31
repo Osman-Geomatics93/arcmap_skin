@@ -52,9 +52,13 @@ def load_qss(theme="arcmap_light", extra_variables=None):
     folder = os.path.join(THEMES_DIR, theme)
     with open(os.path.join(folder, "variables.qss"), encoding="utf-8") as fh:
         variables = load_variables(fh.read())
-    with open(os.path.join(folder, "style.qss"), encoding="utf-8") as fh:
+    style_path = os.path.join(folder, "style.qss")
+    if not os.path.exists(style_path):  # dark theme shares the light rules
+        style_path = os.path.join(THEMES_DIR, "arcmap_light", "style.qss")
+    with open(style_path, encoding="utf-8") as fh:
         style = fh.read()
-    variables["icons"] = _qss_path(UI_ICON_DIR)
+    icon_dir = UI_ICON_DIR + ("_dark" if theme.endswith("dark") and os.path.isdir(UI_ICON_DIR + "_dark") else "")
+    variables["icons"] = _qss_path(icon_dir)
     if extra_variables:
         variables.update(extra_variables)
     return substitute(style, variables)

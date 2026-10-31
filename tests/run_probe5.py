@@ -51,7 +51,7 @@ def run():
                 lines.append("  button %r text=%r class=%s" % (b.objectName(), b.text(), b.metaObject().className()))
         lines.append("  layout: %s rows=%s" % (type(dlg.layout()).__name__, getattr(dlg.layout(), "rowCount", lambda: None)()))
         # header / view signals
-        from qgis.gui import QgsAttributeTableView, QgsDualView
+        from qgis.gui import QgsDualView
         from qgis.PyQt import sip
         view = dlg.findChild(QWidget, "mMainView")
         try:

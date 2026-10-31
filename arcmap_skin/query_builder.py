@@ -296,7 +296,7 @@ def _vector_filter():
         return Qgis.LayerFilter.VectorLayer
     from qgis.core import QgsMapLayerProxyModel
 
-    return QgsMapLayerProxyModel.Filter.VectorLayer
+    return QgsMapLayerProxyModel.Filter.VectorLayer  # QGIS 3.x fallback
 
 
 def open_select_by_attributes(iface, layer=None):

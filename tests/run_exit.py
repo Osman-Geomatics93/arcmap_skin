@@ -7,7 +7,6 @@ way (close event → fileExit → closeProject). QGIS must exit with code 0.
 import os
 
 from qgis.PyQt.QtCore import QEventLoop, QTimer
-from qgis.PyQt.QtWidgets import QApplication
 
 HERE = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "D:/QGIS_Plugins/Arcmap_Skin/tests"
 OUT = os.path.join(HERE, "exit_result.txt")

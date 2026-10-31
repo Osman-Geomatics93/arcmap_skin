@@ -55,18 +55,31 @@ def alive(obj):
 _ICON_CACHE = {}
 
 
+def _icon_dir():
+    try:
+        from qgis.core import QgsSettings
+
+        if QgsSettings().value(SETTINGS_GROUP + "/theme", "arcmap_light", type=str).endswith("dark"):
+            dark = ICON_DIR + "_dark"
+            if os.path.isdir(dark):
+                return dark
+    except (ImportError, RuntimeError, TypeError):
+        return ICON_DIR  # no QGIS settings (unit tests)
+    return ICON_DIR
+
+
 def icon_path(name):
     """Absolute path of a hand-drawn ArcMap-style icon (without extension)."""
-    return os.path.join(ICON_DIR, name + ".svg")
+    return os.path.join(_icon_dir(), name + ".svg")
 
 
 def arcmap_icon(name):
     """Return a hand-drawn ArcMap-style icon, or an empty QIcon if missing."""
-    if name in _ICON_CACHE:
-        return _ICON_CACHE[name]
     path = icon_path(name)
+    if path in _ICON_CACHE:
+        return _ICON_CACHE[path]
     icon = QIcon(path) if os.path.exists(path) else QIcon()
-    _ICON_CACHE[name] = icon
+    _ICON_CACHE[path] = icon
     return icon
 
 

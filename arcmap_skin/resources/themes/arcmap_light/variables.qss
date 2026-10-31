@@ -30,3 +30,13 @@
 @scrollbar-bg: #f0f0f0;
 @scrollbar-handle: #c2c2c2;
 @scrollbar-handle-hover: #a6a6a6;
+
+@bg-button: #fafafa;
+@bg-alternate: #f7f9fc;
+@bg-header-row: #e9e9e9;
+@selected-inactive: #e3e3e3;
+@tooltip-bg: #ffffe1;
+@tooltip-text: #000000;
+@tooltip-border: #767676;
+@table-selected: #a8f0ff;
+@table-selected-text: #000000;

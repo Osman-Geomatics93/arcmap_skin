@@ -86,4 +86,4 @@ def report(errors, warnings, summary=""):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else "dist/arcmap_skin-0.1.0.zip"))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else "dist/arcmap_skin-0.2.0.zip"))

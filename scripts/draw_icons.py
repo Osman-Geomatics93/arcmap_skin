@@ -708,6 +708,10 @@ def _(): return (s("M4 3v10M1.5 10.5L4 13l2.5-2.5", K, 1.4) + rect(8, 3, 7, 2, K
 def _(): return (table(1.5, 2, 10, 11) + s("M9.5 9.5l5 5M14.5 9.5l-5 5", R, 1.8))
 
 
+@icon("repair")
+def _(): return (f("M3 13.5l5.5-5.5 1.5 1.5-5.5 5.5z", K) + f("M9 3a3 3 0 0 1 4 4l-2 .5-1.5-1.5.5-2z", M, K, 1) + s("M11.5 11.5l2 2M13.5 11.5l-2 2", G, 1.6))
+
+
 @icon("options")
 def _(): return (f("M8 1.5l1.3 1.9 2.2-.6.6 2.2 1.9 1.3-1.3 1.7 1.3 1.7-1.9 1.3-.6 2.2-2.2-.6L8 14.5l-1.3-1.9-2.2.6-.6-2.2L2 9.7 3.3 8 2 6.3l1.9-1.3.6-2.2 2.2.6z", M, K, .9)
                  + circ(8, 8, 2.3, W, K, 1))
@@ -756,13 +760,37 @@ def _(): return (rect(2, 2, 12, 12, "none", K, 1) + line(6, 2, 6, 14, K, .9) + l
                  + line(2, 6, 14, 6, K, .9) + line(2, 10, 14, 10, K, .9))
 
 
+DARK_SWAP = {K: "#e4e4e4", M: "#b4b4b4", L: "#4a4a4a", W: "#2b2b2b", "#444": "#d6d6d6", "#555": "#cfcfcf",
+             "#3a3a3a": "#e4e4e4", "#9a9a9a": "#8a8a8a", "#2a5a99": "#7fb3e6"}
+
+
+def darken(svg):
+    """Light strokes / dark fills for the dark theme."""
+    for light, dark in DARK_SWAP.items():
+        svg = svg.replace(light, dark)
+    return svg
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
+    dark_out = OUT + "_dark"
+    os.makedirs(dark_out, exist_ok=True)
     for name, fn in sorted(ICONS.items()):
-        body = fn()
+        body = HEAD + fn() + TAIL + "\n"
         with open(os.path.join(OUT, name + ".svg"), "w", encoding="utf-8") as fh:
-            fh.write(HEAD + body + TAIL + "\n")
-    print("wrote %d icons to %s" % (len(ICONS), OUT))
+            fh.write(body)
+        with open(os.path.join(dark_out, name + ".svg"), "w", encoding="utf-8") as fh:
+            fh.write(darken(body))
+    ui = os.path.join(os.path.dirname(OUT), "ui")
+    ui_dark = ui + "_dark"
+    os.makedirs(ui_dark, exist_ok=True)
+    for n in os.listdir(ui):
+        if n.endswith(".svg"):
+            with open(os.path.join(ui, n), encoding="utf-8") as fh:
+                svg = fh.read()
+            with open(os.path.join(ui_dark, n), "w", encoding="utf-8") as fh:
+                fh.write(darken(svg))
+    print("wrote %d icons to %s (+ dark variants)" % (len(ICONS), OUT))
 
 
 if __name__ == "__main__":

@@ -78,6 +78,21 @@ if plugin is not None:
                 for j in range(tb_item.childCount()):
                     n += tb_item.child(j).childCount()
         check(n >= 80, "ArcToolbox has only %d tools" % n)
+    from qgis.core import QgsPrintLayout, QgsProject as _P
+    _layout = QgsPrintLayout(_P.instance())
+    _layout.initializeDefaults()
+    _layout.setName("SmokeLayout")
+    _P.instance().layoutManager().addLayout(_layout)
+    _designer = iface.openLayoutDesigner(_layout)
+    for _ in range(30):
+        QApplication.processEvents()
+    _dwin = _designer.window()
+    check(_dwin.findChild(QMenu, "ArcMapLayoutInsertMenu") is not None, "layout designer Insert menu missing")
+    check(_dwin.findChild(QToolBar, "ArcMapLayoutViewToolBar") is not None, "layout designer Layout toolbar missing")
+    _dwin.close()
+    _P.instance().layoutManager().removeLayout(_layout)
+    check(win.findChild(QToolBar, "ArcMapAdvancedEditingToolBar") is not None, "Advanced Editing toolbar missing")
+    check(win.findChild(QToolBar, "ArcMapTopologyToolBar") is not None, "Topology toolbar missing")
     for key in ("add_data", "find", "select_by_attributes", "start_editing", "stop_editing", "arctoolbox_dock",
                 "create_features_dock", "reset_layout", "getting_started", "connect_folder", "edit_tool",
                 "attributes_dock", "label_manager", "pause_labeling", "magnifier", "measure_window", "customize"):
