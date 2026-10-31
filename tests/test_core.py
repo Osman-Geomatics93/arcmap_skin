@@ -98,6 +98,17 @@ class StyleSheetTest(unittest.TestCase):
         out = stylesheet.substitute("a { color: @text; background: @bg-panel; x: @unknown; }", variables)
         self.assertEqual(out, "a { color: #111; background: #fff; x: @unknown; }")
 
+    def test_palette_follows_theme(self):
+        from qgis.PyQt.QtGui import QPalette
+
+        for theme in ("arcmap_light", "arcmap_dark"):
+            palette = stylesheet.palette_for(theme)
+            variables = stylesheet.theme_variables(theme)
+            self.assertEqual(palette.color(QPalette.ColorRole.Window).name(), variables["bg-window"])
+            self.assertEqual(palette.color(QPalette.ColorRole.Text).name(), variables["text"])
+        dark = stylesheet.palette_for("arcmap_dark").color(QPalette.ColorRole.Window)
+        self.assertLess(dark.lightness(), 100)
+
     def test_theme_has_no_unresolved_tokens(self):
         for theme in ("arcmap_light", "arcmap_dark"):
             qss = stylesheet.load_qss(theme)

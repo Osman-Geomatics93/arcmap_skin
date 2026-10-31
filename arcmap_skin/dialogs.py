@@ -11,7 +11,7 @@ from qgis.PyQt.QtCore import QObject, Qt, QTimer
 from qgis.PyQt.QtGui import QGuiApplication
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QMenu, QWidget
 
-from .util import alive, tr
+from .util import alive, set_dark_title_bar, tr
 
 from .attribute_table import TABLE_DONE, dress_attribute_table  # noqa: F401
 
@@ -523,6 +523,9 @@ def dress_renderer_combos(widget):
                 button.setText(tr(caption))
 
 
+DARK_TITLE = "arcmapDarkTitle"
+
+
 class WindowDresser(QObject):
     """Dress attribute tables as they gain focus."""
 
@@ -545,6 +548,12 @@ class WindowDresser(QObject):
                 break
 
     def dress_window(self, widget):
+        if widget.isWindow() and not widget.property(DARK_TITLE):
+            from . import settings as skin_settings
+
+            if skin_settings.theme() == "arcmap_dark":
+                set_dark_title_bar(widget, True)
+                widget.setProperty(DARK_TITLE, True)
         candidates = [widget] + widget.findChildren(QDialog)
         for w in candidates:
             if w.metaObject().className() in TABS_BY_CLASS:
@@ -569,6 +578,9 @@ class WindowDresser(QObject):
             except (TypeError, RuntimeError):
                 pass
         for w in QApplication.topLevelWidgets():
+            if w.property(DARK_TITLE):
+                set_dark_title_bar(w, False)
+                w.setProperty(DARK_TITLE, None)
             for d in [w] + w.findChildren(QDialog):
                 if d.property(TABLE_DONE):
                     d.setProperty(TABLE_DONE, None)

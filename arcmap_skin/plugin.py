@@ -370,7 +370,14 @@ class ArcMapSkinPlugin:
         white one, and a dark native title bar on Windows. Both are undone
         with the rest of the look."""
         from qgis.core import QgsProject
-        from qgis.PyQt.QtGui import QColor
+        from qgis.PyQt.QtGui import QColor, QPalette
+
+        # Application palette: dialogs, labels, scroll areas and QGIS's own
+        # pages follow it, so every window turns dark, not only the styled ones.
+        app = QApplication.instance()
+        original = QPalette(app.palette())
+        app.setPalette(stylesheet.palette_for("arcmap_dark"))
+        self.changes.add(lambda: app.setPalette(original))
 
         canvas = self.iface.mapCanvas()
         dark = QColor("#1f1f1f")

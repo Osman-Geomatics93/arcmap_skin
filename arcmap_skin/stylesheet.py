@@ -47,6 +47,42 @@ def substitute(qss, variables):
     return _VAR_USE.sub(repl, qss)
 
 
+def theme_variables(theme):
+    """The colour tokens of a theme (``variables.qss``) as a dict."""
+    with open(os.path.join(THEMES_DIR, theme, "variables.qss"), encoding="utf-8") as fh:
+        return load_variables(fh.read())
+
+
+def palette_for(theme):
+    """A QPalette matching the theme, so widgets the style sheet does not
+    reach (dialog backgrounds, labels, scroll areas, QGIS's own pages) use
+    the same colours."""
+    from qgis.PyQt.QtGui import QColor, QPalette
+
+    v = theme_variables(theme)
+    palette = QPalette()
+    roles = QPalette.ColorRole
+    groups = QPalette.ColorGroup
+    window, panel, text = QColor(v["bg-window"]), QColor(v["bg-panel"]), QColor(v["text"])
+    disabled = QColor(v["text-disabled"])
+    for role, color in (
+        (roles.Window, window), (roles.WindowText, text), (roles.Base, panel),
+        (roles.AlternateBase, QColor(v.get("bg-alternate", v["bg-panel"]))),
+        (roles.ToolTipBase, QColor(v.get("tooltip-bg", v["bg-panel"]))),
+        (roles.ToolTipText, QColor(v.get("tooltip-text", v["text"]))),
+        (roles.Text, text), (roles.Button, QColor(v.get("bg-button", v["bg-window"]))), (roles.ButtonText, text),
+        (roles.BrightText, QColor("#ff6e6e")), (roles.Highlight, QColor(v["selected"])), (roles.HighlightedText, text),
+        (roles.Link, QColor(v["accent"])), (roles.LinkVisited, QColor(v["accent-dark"])),
+        (roles.PlaceholderText, disabled),
+        (roles.Light, window.lighter(130)), (roles.Midlight, window.lighter(115)),
+        (roles.Mid, window.darker(130)), (roles.Dark, window.darker(160)), (roles.Shadow, window.darker(200)),
+    ):
+        palette.setColor(role, color)
+    for role in (roles.WindowText, roles.Text, roles.ButtonText, roles.HighlightedText):
+        palette.setColor(groups.Disabled, role, disabled)
+    return palette
+
+
 def load_qss(theme="arcmap_light", extra_variables=None):
     """Return the theme's stylesheet text with variables and @icons resolved."""
     folder = os.path.join(THEMES_DIR, theme)
