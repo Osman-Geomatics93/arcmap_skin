@@ -61,6 +61,11 @@ def table_strings():
         for toolset, tools in toolsets:
             out.add(toolset)
             out |= {name for name, _ in tools}
+    out |= set(arctoolbox.TOOLBOX_ORDER)
+    for rules in arctoolbox.GROUP_RULES.values():
+        for toolbox, toolset in rules.values():
+            out.add(toolbox)
+            out.add(toolset)
     out |= set(mapview.UNIT_NAMES.values())
     out |= {text for _, text in mapview.UNIT_FORMATS}
     out |= set(dialogs.LAYER_PAGES.values())

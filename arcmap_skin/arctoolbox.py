@@ -271,6 +271,77 @@ TOOLBOXES = [
 ]
 
 
+# Order of ArcMap's toolboxes in the tree; anything else follows alphabetically.
+TOOLBOX_ORDER = [
+    "3D Analyst Tools", "Analysis Tools", "Cartography Tools", "Conversion Tools",
+    "Data Management Tools", "Editing Tools", "Geostatistical Analyst Tools",
+    "Linear Referencing Tools", "Multidimension Tools", "Network Analyst Tools",
+    "Spatial Analyst Tools", "Spatial Statistics Tools", "My Toolboxes",
+]
+
+# Every other Processing algorithm is filed by (provider, group) into an
+# ArcMap toolbox / toolset. Group keys are matched case-insensitively as
+# prefixes of the QGIS group name.
+GROUP_RULES = {
+    "native": {
+        "vector analysis": ("Analysis Tools", "Vector Analysis"),
+        "vector overlay": ("Analysis Tools", "Overlay"),
+        "vector selection": ("Analysis Tools", "Extract"),
+        "vector geometry": ("Data Management Tools", "Features"),
+        "vector general": ("Data Management Tools", "General"),
+        "vector table": ("Data Management Tools", "Fields"),
+        "vector creation": ("Data Management Tools", "Sampling"),
+        "vector coverage": ("Data Management Tools", "Topology"),
+        "vector tiles": ("Conversion Tools", "To Vector Tiles"),
+        "check geometry": ("Data Management Tools", "Topology"),
+        "fix geometry": ("Data Management Tools", "Topology"),
+        "raster analysis": ("Spatial Analyst Tools", "Raster Analysis"),
+        "raster terrain analysis": ("Spatial Analyst Tools", "Surface"),
+        "raster creation": ("Data Management Tools", "Raster"),
+        "raster tools": ("Data Management Tools", "Raster"),
+        "interpolation": ("Spatial Analyst Tools", "Interpolation"),
+        "network analysis": ("Network Analyst Tools", "Analysis"),
+        "database": ("Data Management Tools", "Database"),
+        "file tools": ("Data Management Tools", "File"),
+        "layer tools": ("Data Management Tools", "Layers and Table Views"),
+        "cartography": ("Cartography Tools", "Cartography"),
+        "plots": ("Cartography Tools", "Graphs"),
+        "mesh": ("3D Analyst Tools", "Mesh"),
+        "3d tiles": ("3D Analyst Tools", "3D Tiles"),
+        "metadata tools": ("Data Management Tools", "Metadata"),
+        "modeler tools": ("Data Management Tools", "Modeler"),
+        "gps": ("Data Management Tools", "GPS"),
+        "graphics": ("Cartography Tools", "Graphics"),
+    },
+    "gdal": {
+        "raster analysis": ("Spatial Analyst Tools", "Raster Analysis (GDAL)"),
+        "raster conversion": ("Conversion Tools", "Raster (GDAL)"),
+        "raster extraction": ("Spatial Analyst Tools", "Extraction"),
+        "raster miscellaneous": ("Data Management Tools", "Raster (GDAL)"),
+        "raster projections": ("Data Management Tools", "Projections and Transformations"),
+        "vector conversion": ("Conversion Tools", "Vector (GDAL)"),
+        "vector geoprocessing": ("Analysis Tools", "Overlay (GDAL)"),
+        "vector miscellaneous": ("Data Management Tools", "General (GDAL)"),
+    },
+    "pdal": {
+        "point cloud conversion": ("3D Analyst Tools", "Point Cloud Conversion"),
+        "point cloud data management": ("3D Analyst Tools", "Point Cloud Data Management"),
+        "point cloud extraction": ("3D Analyst Tools", "Point Cloud Extraction"),
+    },
+    "3d": {"": ("3D Analyst Tools", "3D Features")},
+    "grass": {
+        "raster": ("Spatial Analyst Tools", "GRASS Raster"),
+        "vector": ("Analysis Tools", "GRASS Vector"),
+        "imagery": ("Spatial Analyst Tools", "Image Analysis (GRASS)"),
+        "": ("Spatial Analyst Tools", "GRASS"),
+    },
+    "model": {"": ("My Toolboxes", "Models")},
+    "project": {"": ("My Toolboxes", "Project Models")},
+    "script": {"": ("My Toolboxes", "Scripts")},
+}
+GROUP_RULES["qgis"] = GROUP_RULES["native"]
+
+
 def _registry():
     return QgsApplication.processingRegistry()
 
@@ -282,6 +353,33 @@ def _resolve(candidates):
         if alg is not None:
             return alg
     return None
+
+
+def _auto_place(alg):
+    """(toolbox, toolset) for an algorithm not in the curated tables."""
+    provider = alg.provider()
+    pid = provider.id() if provider else ""
+    group = (alg.group() or "").lower()
+    rules = GROUP_RULES.get(pid)
+    if rules:
+        for key, target in rules.items():
+            if key and group.startswith(key):
+                return target
+        if "" in rules:
+            return rules[""]
+    name = provider.name() if provider else pid
+    return ("%s Tools" % name, alg.group() or tr("Tools"))
+
+
+def _hidden(alg):
+    try:
+        from qgis.core import QgsProcessingAlgorithm
+
+        flags = alg.flags()
+        return bool(flags & QgsProcessingAlgorithm.Flag.FlagHideFromToolbox) or bool(
+            flags & QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool) and False
+    except Exception:  # noqa: BLE001
+        return False
 
 
 class ArcToolboxDock(QDockWidget):
@@ -311,31 +409,66 @@ class ArcToolboxDock(QDockWidget):
         self.fill()
 
     def fill(self):
+        """Curated ArcMap tools first, then every other algorithm by rules."""
         self.tree.clear()
         toolbox_icon = arcmap_icon("arctoolbox")
         toolset_icon = arcmap_icon("toolset")
         tool_icon = arcmap_icon("tool")
+        toolboxes = {}  # name → (item, {toolset: item})
+        placed = set()
         total = 0
+
+        def toolbox_item(name):
+            if name not in toolboxes:
+                item = QTreeWidgetItem([tr(name)])
+                item.setIcon(0, toolbox_icon)
+                toolboxes[name] = (item, {})
+            return toolboxes[name]
+
+        def toolset_item(toolbox, toolset):
+            tb_item, sets = toolbox_item(toolbox)
+            if toolset not in sets:
+                item = QTreeWidgetItem(tb_item, [tr(toolset)])
+                item.setIcon(0, toolset_icon)
+                sets[toolset] = item
+            return sets[toolset]
+
+        def add_tool(parent, caption, alg):
+            item = QTreeWidgetItem(parent, [caption])
+            item.setIcon(0, tool_icon)
+            item.setData(0, ALG_ROLE, alg.id())
+            tip = alg.shortDescription() or alg.displayName()
+            item.setToolTip(0, "%s  (%s)" % (tip, alg.id()))
+            return item
+
         for toolbox, toolsets in TOOLBOXES:
-            tb_item = QTreeWidgetItem(self.tree, [tr(toolbox)])
-            tb_item.setIcon(0, toolbox_icon)
             for toolset, tools in toolsets:
-                ts_item = QTreeWidgetItem(tb_item, [tr(toolset)])
-                ts_item.setIcon(0, toolset_icon)
                 for name, candidates in tools:
                     alg = _resolve(candidates)
                     if alg is None:
                         continue
-                    item = QTreeWidgetItem(ts_item, [tr(name)])
-                    item.setIcon(0, tool_icon)
-                    item.setData(0, ALG_ROLE, alg.id())
-                    item.setToolTip(0, "%s  (%s)" % (alg.displayName(), alg.id()))
+                    add_tool(toolset_item(toolbox, toolset), tr(name), alg)
+                    placed.add(alg.id())
                     total += 1
-                if ts_item.childCount() == 0:
-                    tb_item.removeChild(ts_item)
-            if tb_item.childCount() == 0:
-                self.tree.takeTopLevelItem(self.tree.indexOfTopLevelItem(tb_item))
+        for alg in _registry().algorithms():
+            if alg.id() in placed or _hidden(alg):
+                continue
+            toolbox, toolset = _auto_place(alg)
+            add_tool(toolset_item(toolbox, toolset), alg.displayName(), alg)
+            placed.add(alg.id())
+            total += 1
+
+        def order(name):
+            return (TOOLBOX_ORDER.index(name) if name in TOOLBOX_ORDER else len(TOOLBOX_ORDER) - 1, name)
+
+        for name in sorted(toolboxes, key=order):
+            tb_item, sets = toolboxes[name]
+            tb_item.sortChildren(0, Qt.SortOrder.AscendingOrder)
+            for ts_item in sets.values():
+                ts_item.sortChildren(0, Qt.SortOrder.AscendingOrder)
+            self.tree.addTopLevelItem(tb_item)
         self.tree.collapseAll()
+        self.total = total
         self.setToolTip(tr("%d tools") % total)
 
     def filter(self, text):
