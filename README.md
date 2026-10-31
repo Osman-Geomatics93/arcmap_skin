@@ -109,6 +109,10 @@ which is what the specs in `menus.py`, `toolbars.py` and `panes.py` rely on.
 | `basemaps.py`, `find.py`, `editing.py`, `shortcuts.py`, `getting_started.py` | basemap gallery, Find window, editing workflow and snapping toolbar, keyboard shortcuts, start-up dialog |
 | `edit_tool.py`, `attributes_window.py`, `label_manager.py`, `measure.py`, `magnifier.py`, `customize.py`, `canvas_menu.py` | Edit Tool, Attributes window, Label Manager, Measure and Magnifier windows, Customize dialog, map right-click menu |
 
+## Author
+
+Osman Geomatics – https://github.com/Osman-Geomatics93 – https://osman-geomatics93.online/
+
 ## Licence
 
 GPL-2.0-or-later. The derived icon theme is built from QGIS icons under the
