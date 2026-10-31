@@ -1,0 +1,17 @@
+*.pyc
+.idea/
+.pytest_cache/
+.vscode/
+/arcmap_skin/i18n/missing_*.txt
+/build/
+/dist/
+/symbology-style.db
+/tests/exit_result.txt
+/tests/probe*_result.txt
+/tests/probe_result.txt
+/tests/screenshot_*.png
+/tests/smoke_result.txt
+/tests/startup_result.txt
+__pycache__/
+Thumbs.db
+/.qgis_profiles/
