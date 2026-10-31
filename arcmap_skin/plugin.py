@@ -14,7 +14,7 @@ import traceback
 from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsSettings
 from qgis.PyQt.QtCore import QByteArray, QSize, QTimer
 from qgis.PyQt.QtGui import QAction
-from qgis.PyQt.QtWidgets import QMessageBox, QWidget
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QWidget
 
 from . import (
     arctoolbox,
@@ -63,6 +63,7 @@ class ArcMapSkinPlugin:
         self.actions = {}
         self.action = None
         self.on = False
+        self._reapply_timer = None
         self._startup = False
         self._busy = False  # re-entrancy guard: enable() processes events
         self._unload_pending = False
@@ -101,9 +102,10 @@ class ArcMapSkinPlugin:
             self.iface.initializationCompleted.disconnect(self._enable_quietly)
         except (TypeError, RuntimeError):
             pass
-        timer = getattr(self, "_startup_timer", None)
-        if timer is not None and alive(timer):
-            timer.stop()
+        for timer in (getattr(self, "_startup_timer", None), self._reapply_timer):
+            if timer is not None and alive(timer):
+                timer.stop()
+        self._reapply_timer = None
         if self._busy:
             # Unloaded (e.g. reinstalled from ZIP) while the look is still
             # being applied: let enable() finish, then take it all back.
@@ -127,9 +129,35 @@ class ArcMapSkinPlugin:
             self.iface.unregisterOptionsWidgetFactory(factory)
             self.options_factory = None
 
+    def reapply_when_idle(self):
+        """Re-apply once no modal dialog is open (settings changed from the Options dialog).
+
+        Re-applying while QgsOptions is still saving its pages re-polishes
+        widgets that are being destroyed and crashes QGIS, so poll until the
+        application has no modal widget left, then switch off and on.
+        """
+        if self._reapply_timer is not None:
+            return
+        self._reapply_timer = QTimer(self.win)
+        self._reapply_timer.setInterval(250)
+
+        def tick():
+            if not alive(self.win):
+                self._reapply_timer.stop()
+                self._reapply_timer = None
+                return
+            if QApplication.activeModalWidget() is not None or self._busy:
+                return
+            self._reapply_timer.stop()
+            self._reapply_timer = None
+            QTimer.singleShot(100, self.reapply)
+
+        self._reapply_timer.timeout.connect(tick)
+        self._reapply_timer.start()
+
     def reapply(self):
         """Switch the look off and on again (after settings changed)."""
-        if not self.on or self._busy:
+        if not self.on or self._busy or QApplication.activeModalWidget() is not None:
             return
         try:
             self.disable(remember=False)
@@ -210,8 +238,11 @@ class ArcMapSkinPlugin:
         return [(name, weight, callback) for name, weight, callback, key in steps if key is None or on(key)]
 
     def _apply_actions(self):
-        self.actions = custom_actions(self.iface, self.changes)
-        editing.editor_actions(self.iface, self.changes, self.actions)
+        acts = custom_actions(self.iface, self.changes)
+        editing.editor_actions(self.iface, self.changes, acts)
+        # ``acts`` is deleted wholesale when the look is switched off; the
+        # toggle action outlives that, so keep it in a copy only.
+        self.actions = dict(acts)
         if self.action is not None:
             self.actions["arcmap_look"] = self.action
 

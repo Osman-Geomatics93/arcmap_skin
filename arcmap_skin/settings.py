@@ -9,7 +9,6 @@ and default to on. Changing them re-applies the look.
 
 from qgis.core import QgsSettings
 from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
-from qgis.PyQt.QtCore import QTimer
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QFormLayout, QGroupBox, QLabel, QVBoxLayout
 
 from .util import SETTINGS_GROUP, tr, ui_icon
@@ -98,8 +97,10 @@ class SettingsPage(QgsOptionsPageWidget):
             changed = True
         settings.setValue(SETTINGS_GROUP + "/enabled", self.startup.isChecked())
         if changed and self.plugin is not None and self.plugin.on:
-            # Re-apply after the options dialog has closed.
-            QTimer.singleShot(300, self.plugin.reapply)
+            # QGIS is still saving the other Options pages (some of them pop
+            # up message boxes); the look is re-applied only once every
+            # modal dialog, including the Options dialog itself, has closed.
+            self.plugin.reapply_when_idle()
 
 
 class SettingsFactory(QgsOptionsWidgetFactory):

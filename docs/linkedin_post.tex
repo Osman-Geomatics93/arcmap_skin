@@ -1,0 +1,45 @@
+% LinkedIn teaser post for ArcMap Skin 0.2.0
+% Copy the text between the two rules into LinkedIn as-is.
+% Compile with xelatex or lualatex if you want a PDF preview (emoji need a colour-emoji font).
+
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{parskip}
+\geometry{margin=2.5cm}
+\setmainfont{Segoe UI}
+\newfontfamily\emojifont{Segoe UI Emoji}
+\newcommand{\emoji}[1]{{\emojifont #1}}
+
+\begin{document}
+
+\noindent\rule{\textwidth}{0.4pt}
+
+\emoji{🗺️} \textbf{Miss ArcMap? Your QGIS just got a familiar face.}
+
+I've been building something for everyone who learned GIS on ArcMap 10 and still reaches for File \textgreater{} Add Data out of habit.
+
+Meet \textbf{ArcMap Skin}, a free, open-source QGIS plugin. One click, and QGIS rearranges itself into the layout you already know:
+
+\emoji{✅} The classic menu bar: File, Edit, View, Bookmarks, Insert, Selection, Geoprocessing, Customize, Windows, Help \\
+\emoji{✅} Standard, Tools and Editor toolbars, plus Draw, Labeling, Advanced Editing and Topology \\
+\emoji{✅} Table Of Contents with List By Drawing Order / Source / Visibility / Selection \\
+\emoji{✅} ArcToolbox with every Processing tool filed into the toolboxes you remember \\
+\emoji{✅} Catalog, Search and Time Slider panes, Data View / Layout View buttons, an ArcMap-style status bar \\
+\emoji{✅} The Table window, Query Builder, Find, Attributes window, Label Manager, Getting Started dialog \\
+\emoji{✅} Light and dark themes, redrawn flat icons, and English, Arabic, Turkish, French and Spanish
+
+And the best part: one more click switches it off and QGIS comes back exactly as it was. Nothing is overwritten. Every change is recorded and reverted.
+
+\emoji{🧰} Built for QGIS 3.40+, licensed GPL. Independent project, not affiliated with Esri.
+
+\emoji{🔗} Download v0.2.0: \url{https://github.com/Osman-Geomatics93/arcmap_skin/releases}
+
+I'd love to hear from teams migrating from ArcMap. What would make the switch easier for you? Drop it in the comments. \emoji{👇}
+
+\#QGIS \#GIS \#OpenSource \#ArcMap \#Geomatics \#Geospatial \#Mapping \#FOSS4G \#RemoteSensing \#Python
+
+\noindent\rule{\textwidth}{0.4pt}
+
+\end{document}
