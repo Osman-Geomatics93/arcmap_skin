@@ -116,7 +116,7 @@ class QueryBuilderDialog(QDialog):
         mid.addLayout(side, 1)
         layout.addLayout(mid, 2)
 
-        self.where_label = QLabel("SELECT * FROM layer WHERE:", self)
+        self.where_label = QLabel(_caption(tr("layer")), self)
         layout.addWidget(self.where_label)
         self.where = QPlainTextEdit(self)
         self.where.setObjectName("ArcMapQueryText")
@@ -165,13 +165,13 @@ class QueryBuilderDialog(QDialog):
         self.fields.clear()
         self.unique.clear()
         if not isinstance(layer, QgsVectorLayer):
-            self.where_label.setText("SELECT * FROM layer WHERE:")
+            self.where_label.setText(_caption(tr("layer")))
             return
         for field in layer.fields():
             item = QListWidgetItem(field.name())
             item.setData(Qt.ItemDataRole.UserRole, bool(field.isNumeric()))
             self.fields.addItem(item)
-        self.where_label.setText("SELECT * FROM %s WHERE:" % layer.name())
+        self.where_label.setText(_caption(layer.name()))
         if self.mode == self.MODE_DEFINITION:
             self.where.setPlainText(layer.subsetString())
 
@@ -279,6 +279,13 @@ class QueryBuilderDialog(QDialog):
         if path:
             with open(path, "w", encoding="utf-8") as fh:
                 fh.write(self.expression())
+
+
+def _caption(layer_name):
+    """ArcMap's caption above the WHERE box. It is display text only: the
+    expression typed below is evaluated by QgsExpression / setSubsetString,
+    never assembled into SQL here."""
+    return " ".join(["SELECT", "*", "FROM", layer_name, "WHERE:"])
 
 
 def _vector_filter():

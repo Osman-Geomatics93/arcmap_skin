@@ -28,7 +28,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QTimer
 from qgis.PyQt.QtGui import QColor, QFont
 
-from .util import RESOURCES, alive, tr
+from .util import RESOURCES, alive, log_ignored, tr
 
 TAG = "ArcMap"
 PREFIX = "ArcMap "
@@ -173,8 +173,8 @@ class Symbology:
         registry.addColorScheme(self.scheme)
         try:
             registry.setRandomStyleColorScheme(self.scheme)
-        except Exception:  # noqa: BLE001
-            pass
+        except (AttributeError, TypeError) as exc:
+            log_ignored("setRandomStyleColorScheme", exc)
         self.set_project_defaults()
         self.set_selection_color()
         self.project.readProject.connect(self._project_read)
@@ -248,8 +248,8 @@ class Symbology:
         registry = QgsApplication.colorSchemeRegistry()
         try:
             registry.setRandomStyleColorScheme(None)
-        except Exception:  # noqa: BLE001
-            pass
+        except (AttributeError, TypeError) as exc:
+            log_ignored("setRandomStyleColorScheme(None)", exc)
         registry.removeColorScheme(self.scheme)
         qstyle = QgsStyle.defaultStyle()
         for name in self.added_ramps:
@@ -259,8 +259,8 @@ class Symbology:
                 qstyle.detagSymbol(QgsStyle.StyleEntity.ColorrampEntity, name, [TAG])
         try:
             qstyle.remove(QgsStyle.StyleEntity.TagEntity, qstyle.tagId(TAG))
-        except Exception:  # noqa: BLE001
-            pass
+        except (AttributeError, TypeError, RuntimeError) as exc:
+            log_ignored("remove tag", exc)
 
 
 def apply_symbology(iface, changes):

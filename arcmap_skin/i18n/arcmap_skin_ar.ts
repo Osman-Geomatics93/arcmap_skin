@@ -2921,5 +2921,9 @@
         <source>feature</source>
         <translation>معلم</translation>
     </message>
+    <message>
+        <source>layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

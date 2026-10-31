@@ -16,7 +16,7 @@ from qgis.PyQt.QtCore import QEvent, QObject, Qt, QTimer
 from qgis.PyQt.QtWidgets import QApplication, QDockWidget, QLineEdit, QToolBar, QWidget
 
 from . import contents_views, toolbars
-from .util import alive, arcmap_icon, find_dock, tr
+from .util import alive, arcmap_icon, find_dock, log_ignored, tr
 
 LEFT = Qt.DockWidgetArea.LeftDockWidgetArea
 RIGHT = Qt.DockWidgetArea.RightDockWidgetArea
@@ -305,8 +305,8 @@ def reset_panes(win, close_others=False):
     if layers is not None:
         try:
             win.resizeDocks([layers], [280], Qt.Orientation.Horizontal)
-        except Exception:  # noqa: BLE001  (older Qt)
-            pass
+        except (AttributeError, TypeError) as exc:  # older Qt
+            log_ignored("resizeDocks", exc)
 
 
 def ensure_native_toolbars_hidden(win):

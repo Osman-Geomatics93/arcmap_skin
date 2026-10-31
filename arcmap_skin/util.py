@@ -34,6 +34,14 @@ def tr(text):
     return QCoreApplication.translate("ArcMapSkin", text)
 
 
+def log_ignored(what, exc):
+    """Record an exception that is deliberately tolerated (API differences
+    between QGIS versions), so nothing is swallowed silently."""
+    from qgis.core import Qgis, QgsMessageLog
+
+    QgsMessageLog.logMessage("%s: %s" % (what, exc), "ArcMap Skin", Qgis.MessageLevel.Info)
+
+
 def alive(obj):
     """True when ``obj`` is a live Qt object (not None, not deleted by Qt)."""
     if obj is None:
