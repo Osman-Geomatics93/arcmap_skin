@@ -61,6 +61,7 @@ class ArcMapSkinPlugin:
         self.on = False
         self._startup = False
         self._busy = False  # re-entrancy guard: enable() processes events
+        self._unload_pending = False
         self._sheet = None
 
     # ------------------------------------------------------------ lifecycle
@@ -93,6 +94,14 @@ class ArcMapSkinPlugin:
             self.iface.initializationCompleted.disconnect(self._enable_quietly)
         except (TypeError, RuntimeError):
             pass
+        timer = getattr(self, "_startup_timer", None)
+        if timer is not None and alive(timer):
+            timer.stop()
+        if self._busy:
+            # Unloaded (e.g. reinstalled from ZIP) while the look is still
+            # being applied: let enable() finish, then take it all back.
+            self._unload_pending = True
+            return
         if self.on:
             canvas = self.iface.mapCanvas()
             shutting_down = (not alive(canvas)) or canvas.isFrozen()
@@ -217,6 +226,14 @@ class ArcMapSkinPlugin:
             self.on = True
         finally:
             self._busy = False
+        if getattr(self, "_unload_pending", False):
+            self._unload_pending = False
+            self.disable(remember=False)
+            if self.action is not None:
+                self.iface.removePluginMenu(tr("&ArcMap Skin"), self.action)
+                self.action.deleteLater()
+                self.action = None
+            return
         settings.setValue(KEY_ENABLED, True)
         if self.action is not None:
             self.action.setChecked(True)
