@@ -56,7 +56,7 @@ from QGIS's own icons (GPL).
 | Catalog tabs | Contents / Preview / Description tabs over the Catalog tree, as in ArcCatalog. |
 | Symbol Selector | ArcMap wording on QGIS's symbol selector (full gallery, Properties, Save As…). |
 | Settings page | *Customize ▸ ArcMap Skin Options…* opens its own window (also available as a page in QGIS Options): switch each feature on or off, choose the light or dark ArcMap theme, start-up behaviour. |
-| Dark theme | ArcMap (dark): dark palette with light icon variants. |
+| Dark theme | ArcMap (dark): dark palette, light icon variants, dark map canvas and Windows title bar. |
 | Languages | English, Arabic, Turkish, French and Spanish (`scripts/i18n.py` builds the `.qm` without Qt tools). |
 | Quality | GitHub Actions run pyflakes, Bandit (the plugins.qgis.org scanner), the unit tests and the zip validator on every push; a tag `vX.Y.Z` builds and publishes the release zip. A Qt5/Qt6 lint test keeps the sources QGIS 4 compatible. |
 

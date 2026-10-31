@@ -7,6 +7,7 @@ reverse, so QGIS comes back exactly as it was.
 """
 
 import os
+import sys
 import traceback
 
 from qgis.PyQt import sip
@@ -32,6 +33,26 @@ SETTINGS_GROUP = "arcmap_skin"
 def tr(text):
     """Translate ``text`` in the ArcMapSkin context."""
     return QCoreApplication.translate("ArcMapSkin", text)
+
+
+def set_dark_title_bar(widget, on):
+    """Windows 10/11: paint a top-level window's native title bar dark (or light again).
+
+    Uses DwmSetWindowAttribute(DWMWA_USE_IMMERSIVE_DARK_MODE); a no-op on
+    other platforms or when the attribute is unsupported.
+    """
+    if sys.platform != "win32" or not alive(widget):
+        return
+    try:
+        import ctypes
+
+        hwnd = int(widget.winId())
+        value = ctypes.c_int(1 if on else 0)
+        for attribute in (20, 19):  # 19 on Windows 10 builds before 20H1
+            if ctypes.windll.dwmapi.DwmSetWindowAttribute(hwnd, attribute, ctypes.byref(value), ctypes.sizeof(value)) == 0:
+                break
+    except (OSError, AttributeError, RuntimeError, ValueError) as exc:
+        log_ignored("dark title bar", exc)
 
 
 def log_ignored(what, exc):

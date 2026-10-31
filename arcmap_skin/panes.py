@@ -196,6 +196,7 @@ def _dress_catalog(changes, dock, actions):
     if props is not None and old is not None and not dock.property("arcmapCatalogTabs"):
         dock.setProperty("arcmapCatalogTabs", True)
         container = QWidget(dock)
+        container.setObjectName("ArcMapCatalogTabsBox")
         layout = QVBoxLayout(container)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)

@@ -234,6 +234,10 @@ QTabBar::tab:hover:!selected {
     background-color: @hover;
 }
 
+QTabBar, QWidget#ArcMapCatalogTabsBox {
+    background-color: @bg-window;
+}
+
 /* ----------------------------------------------------------- input widgets */
 QPushButton {
     background-color: @bg-button;

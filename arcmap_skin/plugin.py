@@ -39,7 +39,7 @@ from . import (
 )
 from .actions import custom_actions
 from .progress import ProgressBox, weighted
-from .util import SETTINGS_GROUP, Changes, alive, top_toolbars, tr, ui_icon
+from .util import SETTINGS_GROUP, Changes, alive, set_dark_title_bar, top_toolbars, tr, ui_icon
 
 KEY_ENABLED = SETTINGS_GROUP + "/enabled"
 KEY_ORIGINAL_STATE = SETTINGS_GROUP + "/original_state"
@@ -362,6 +362,42 @@ class ArcMapSkinPlugin:
         self.changes.set(win, "documentMode", True)
         # Compact ArcMap-size toolbar icons.
         self.changes.set(win, "iconSize", QSize(18, 18))
+        if skin_settings.theme() == "arcmap_dark":
+            self._apply_dark_extras()
+
+    def _apply_dark_extras(self):
+        """Dark theme: a dark map canvas while the project uses the default
+        white one, and a dark native title bar on Windows. Both are undone
+        with the rest of the look."""
+        from qgis.core import QgsProject
+        from qgis.PyQt.QtGui import QColor
+
+        canvas = self.iface.mapCanvas()
+        dark = QColor("#1f1f1f")
+
+        def is_default(color):
+            return color.lightness() > 200
+
+        if is_default(canvas.canvasColor()):
+            self.changes.set(canvas, "canvasColor", dark)
+
+        def darken_after_read(*_):
+            # QGIS applies the project's background colour from the same
+            # signal; run after it so the default white turns dark again.
+            QTimer.singleShot(0, lambda: alive(canvas) and is_default(canvas.canvasColor()) and canvas.setCanvasColor(dark))
+
+        project = QgsProject.instance()
+        project.readProject.connect(darken_after_read)
+
+        def undo():
+            try:
+                project.readProject.disconnect(darken_after_read)
+            except (TypeError, RuntimeError):
+                pass
+
+        self.changes.add(undo)
+        set_dark_title_bar(self.win, True)
+        self.changes.add(lambda: set_dark_title_bar(self.win, False))
 
     def _apply_layout(self):
         """Place toolbars and panes: saved skin layout, or ArcMap defaults."""
