@@ -44,6 +44,8 @@ KEY_ORIGINAL_STATE = SETTINGS_GROUP + "/original_state"
 KEY_ORIGINAL_GEOMETRY = SETTINGS_GROUP + "/original_geometry"
 KEY_SKIN_STATE = SETTINGS_GROUP + "/skin_state"
 KEY_LAYOUT_DONE = SETTINGS_GROUP + "/layout_done"
+KEY_LAYOUT_VERSION = SETTINGS_GROUP + "/layout_version"
+LAYOUT_VERSION = 2  # bump when the default ArcMap arrangement changes
 
 
 def log(msg, level=None):
@@ -207,10 +209,16 @@ class ArcMapSkinPlugin:
             box = ProgressBox(self.win, tr("Applying the ArcMap look…"))
             self.win.setUpdatesEnabled(False)
             try:
+                import time
+
+                timings = []
                 for name, callback, base, span in weighted(self._steps()):
                     box.begin(name, base, span)
+                    t0 = time.perf_counter()
                     callback()
+                    timings.append("%s %.1fs" % (name, time.perf_counter() - t0))
                     box.fraction(1.0)
+                log("Apply timings: " + ", ".join(timings))
             except Exception:
                 self.win.setUpdatesEnabled(True)
                 box.finish()
@@ -303,11 +311,14 @@ class ArcMapSkinPlugin:
         settings = QgsSettings()
         state = settings.value(KEY_SKIN_STATE)
         restored = False
-        if isinstance(state, QByteArray) and not state.isEmpty():
+        fresh_layout = settings.value(KEY_LAYOUT_VERSION, 0, type=int) != LAYOUT_VERSION
+        if not fresh_layout and isinstance(state, QByteArray) and not state.isEmpty():
             restored = self.win.restoreState(state)
         if not restored or not any(tb.isVisible() for tb in top_toolbars(self.win)):
             toolbars.reset_toolbars(self.win)
-            panes.reset_panes(self.win)
+            panes.reset_panes(self.win, close_others=fresh_layout)
+            settings.setValue(KEY_LAYOUT_VERSION, LAYOUT_VERSION)
+            settings.remove(KEY_SKIN_STATE)
         panes.ensure_native_toolbars_hidden(self.win)
 
     # ------------------------------------------------------------- disable

@@ -93,7 +93,6 @@ TOOLBARS = [
             "mActionOptions",
         ]),
         ("custom", "edit_tool"),
-        "mActionModifyAnnotation",
         ("menubtn", "sketch", "Construction Tools", "mActionAddFeature", [
             "mActionAddFeature", SEP,
             "mActionDigitizeWithSegment", "mActionDigitizeWithCurve", "mActionStreamDigitize",
@@ -481,12 +480,12 @@ def reset_toolbars(win):
     for tb in addins:
         win.addToolBar(top, tb)
         tb.setVisible(True)
-    # QGIS toolbars that add-ins populate keep showing their content.
+    # QGIS's Web / Database / Vector toolbars stay off in the ArcMap layout
+    # (their commands remain under Customize > Toolbars and the QGIS menus).
     for name in ("mWebToolBar", "mVectorToolBar", "mDatabaseToolBar"):
         tb = find_toolbar(win, name)
-        if tb is not None and tb.actions() and tb not in addins:
-            win.addToolBar(top, tb)
-            tb.setVisible(True)
+        if tb is not None:
+            tb.setVisible(False)
 
 
 def hide_replaced_native(win):

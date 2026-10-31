@@ -95,6 +95,21 @@ class ContentsViews(QWidget):
         self.title = QLabel("", self)
         self.title.setObjectName("ArcMapTocViewTitle")
         layout.addWidget(self.title)
+        # The few QGIS layer-panel tools ArcMap users expect, on the right
+        defaults = tree_view.defaultActions() if hasattr(tree_view, "defaultActions") else None
+        if defaults is not None:
+            add_group = defaults.actionAddGroup(self)
+            add_group.setIcon(arcmap_icon("folder"))
+            add_group.setToolTip(tr("New Group Layer"))
+            b = tool_button(add_group.icon(), tr("New Group Layer"), size=16, parent=self)
+            b.setDefaultAction(add_group)
+            layout.addWidget(b)
+        self.expand_button = tool_button(arcmap_icon("sort_desc"), tr("Expand All Layers"), size=16, parent=self)
+        self.expand_button.clicked.connect(lambda: tree_view.expandAllNodes())
+        layout.addWidget(self.expand_button)
+        self.collapse_button = tool_button(arcmap_icon("sort_asc"), tr("Collapse All Layers"), size=16, parent=self)
+        self.collapse_button.clicked.connect(lambda: tree_view.collapseAllNodes())
+        layout.addWidget(self.collapse_button)
 
         self.list = QTreeWidget(dock)
         self.list.setObjectName("ArcMapTocList")
@@ -307,6 +322,12 @@ def dress_contents(iface, changes, dock, actions):
         return None
     views = ContentsViews(iface, dock, tree_view, actions)
     layout.insertWidget(0, views)
+    # ArcMap's TOC has only the List By row: hide QGIS's layer-panel toolbar
+    from qgis.PyQt.QtWidgets import QToolBar
+
+    for tb in container.findChildren(QToolBar):
+        if tb is not views and tb.parent() is container:
+            changes.set(tb, "visible", False)
     index = layout.indexOf(tree_view)
     layout.insertWidget(index + 1 if index >= 0 else layout.count(), views.list)
     changes.add(views.remove)

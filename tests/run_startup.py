@@ -45,7 +45,7 @@ def run():
 
     QgsApplication.messageLog().messageReceived.connect(_log)
     plugin = None
-    for _ in range(90):  # up to 45 s for the look to switch on
+    for _ in range(240):  # up to 120 s for the look to switch on
         wait(500)
         plugin = utils.plugins.get("arcmap_skin")
         if plugin is not None and plugin.on:

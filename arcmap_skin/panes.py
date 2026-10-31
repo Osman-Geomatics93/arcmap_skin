@@ -185,7 +185,7 @@ def _dress_catalog(changes, dock, actions):
     for action in dock.findChildren(QAction):
         text = (action.text() + action.objectName()).lower()
         if "propert" in text and action.isCheckable():
-            changes.set(action, "checked", True)
+            action.setToolTip(tr("Preview / properties of the selected item"))
             break
     connect = actions.get("connect_folder") if actions else None
     if connect is None:
